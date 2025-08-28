@@ -53,66 +53,66 @@ cp .env.example .env
 3. **Setup and start the application**
 ```bash
 # One command setup (builds, installs dependencies, sets up database)
-rake docker:setup
+rake services:setup
 
 # Start all services
-rake docker:up
+rake services:up
 ```
 
 4. **Access the application**
 - **Rails App**: http://localhost:3000
 - **MinIO Console**: http://localhost:9001 (minioadmin/minioadmin123)
 - **MailHog**: http://localhost:8025 (email testing)
-- **PgAdmin**: http://localhost:5050 (admin@example.com/admin123) - run `rake docker:up_with_tools`
+- **PgAdmin**: http://localhost:5050 (admin@example.com/admin123) - run `rake services:up_with_tools`
 
 ### Available Rake Tasks
 
 #### Development Tasks
 ```bash
-rake docker:setup          # Initial setup (build, bundle, database)
-rake docker:up              # Start all services
-rake docker:down            # Stop all services
-rake docker:restart         # Restart services
-rake docker:logs            # View all logs
-rake docker:logs_web        # View Rails app logs
-rake docker:ps              # Show running containers
+rake services:setup         # Initial setup (build, bundle, database)
+rake services:up            # Start all services
+rake services:down          # Stop all services
+rake services:restart       # Restart services
+rake services:logs          # View all logs
+rake services:logs_web      # View Rails app logs
+rake services:ps            # Show running containers
 ```
 
 #### Rails Tasks in Docker
 ```bash
-rake docker:console         # Open Rails console
-rake docker:bash            # Open bash shell in web container
-rake docker:bundle          # Install gems
-rake docker:yarn            # Install JavaScript packages
-rake docker:test            # Run tests
-rake docker:rubocop         # Run code linting
-rake docker:rubocop_fix     # Fix code style issues
+rake services:console       # Open Rails console
+rake services:bash          # Open bash shell in web container
+rake services:bundle        # Install gems
+rake services:yarn          # Install JavaScript packages
+rake services:test          # Run tests
+rake services:rubocop       # Run code linting
+rake services:rubocop_fix   # Fix code style issues
 ```
 
 #### Database Tasks
 ```bash
-rake docker:db:setup        # Setup database (create, migrate, seed)
-rake docker:db:create       # Create database
-rake docker:db:migrate      # Run migrations
-rake docker:db:seed         # Seed database
-rake docker:db:reset        # Reset database
-rake docker:db:console      # Open database console
+rake services:db:setup      # Setup database (create, migrate, seed)
+rake services:db:create     # Create database
+rake services:db:migrate    # Run migrations
+rake services:db:seed       # Seed database
+rake services:db:reset      # Reset database
+rake services:db:console    # Open database console
 ```
 
 #### Utility Tasks
 ```bash
-rake docker:minio_console   # Open MinIO web console
-rake docker:stats           # Show container resource usage
-rake docker:clean           # Clean containers (keeps data)
-rake docker:clean_all       # Clean everything including data (WARNING!)
+rake services:minio_console # Open MinIO web console
+rake services:stats         # Show container resource usage
+rake services:clean         # Clean containers (keeps data)
+rake services:clean_all     # Clean everything including data (WARNING!)
 ```
 
 #### Production Tasks
 ```bash
-rake docker:prod:build      # Build production images
-rake docker:prod:up         # Start production environment
-rake docker:prod:down       # Stop production environment
-rake docker:prod:logs       # View production logs
+rake services:prod:build    # Build production images
+rake services:prod:up       # Start production environment
+rake services:prod:down     # Stop production environment
+rake services:prod:logs     # View production logs
 ```
 
 ## 🗃 Services Overview
@@ -153,7 +153,7 @@ pdf-editor/
 ├── db/
 │   └── migrate/               # Database migrations
 ├── lib/tasks/
-│   └── docker.rake            # Docker management tasks
+│   └── services.rake          # Service management tasks
 ├── docker-compose.yml         # Development Docker setup
 ├── docker-compose.production.yml  # Production overrides
 ├── Dockerfile                 # Production image
@@ -195,10 +195,10 @@ Run the test suite in Docker:
 
 ```bash
 # Run all tests
-rake docker:test
+rake services:test
 
 # Run with coverage
-rake docker:test COVERAGE=true
+rake services:test COVERAGE=true
 
 # Run specific test file
 docker-compose run --rm -e RAILS_ENV=test web rspec spec/models/pdf_document_spec.rb
@@ -210,12 +210,12 @@ docker-compose run --rm -e RAILS_ENV=test web rspec spec/models/pdf_document_spe
 
 1. **Build production image**
 ```bash
-rake docker:prod:build
+rake services:prod:build
 ```
 
 2. **Deploy with production compose**
 ```bash
-rake docker:prod:up
+rake services:prod:up
 ```
 
 ### Environment Setup for Production
@@ -249,8 +249,8 @@ The application includes health check endpoints:
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
 3. Make your changes
-4. Run tests (`rake docker:test`)
-5. Run linting (`rake docker:rubocop_fix`)
+4. Run tests (`rake services:test`)
+5. Run linting (`rake services:rubocop_fix`)
 6. Commit your changes (`git commit -m 'Add amazing feature'`)
 7. Push to the branch (`git push origin feature/amazing-feature`)
 8. Open a Pull Request
@@ -264,30 +264,30 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ### Common Issues
 
 1. **Port conflicts**: If ports are in use, update `.env` with different port numbers
-2. **Database connection issues**: Run `rake docker:db:setup` to initialize the database
+2. **Database connection issues**: Run `rake services:db:setup` to initialize the database
 3. **Storage issues**: Ensure MinIO is running with `docker-compose ps minio`
 4. **Memory issues**: Increase Docker memory allocation in Docker Desktop settings
 
 ### Getting Help
 
-- Check the logs: `rake docker:logs`
-- Inspect containers: `rake docker:ps`
-- Reset everything: `rake docker:clean_all` (⚠️ deletes all data)
+- Check the logs: `rake services:logs`
+- Inspect containers: `rake services:ps`
+- Reset everything: `rake services:clean_all` (⚠️ deletes all data)
 
 ### Development Workflow
 
 ```bash
 # Daily development cycle
-rake docker:up           # Start services
-rake docker:logs_web     # Watch Rails logs in another terminal
+rake services:up         # Start services
+rake services:logs_web   # Watch Rails logs in another terminal
 
 # Make changes to code (hot reload enabled)
 
-rake docker:test         # Run tests
-rake docker:rubocop      # Check code style
+rake services:test       # Run tests
+rake services:rubocop    # Check code style
 
 # When done
-rake docker:down         # Stop services
+rake services:down       # Stop services
 ```
 
 ## 🎯 Next Steps

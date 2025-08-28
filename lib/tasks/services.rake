@@ -1,4 +1,4 @@
-namespace :docker do
+namespace :services do
   desc "Setup development environment with Docker"
   task :setup do
     puts "\e[32mSetting up PDF Editor development environment...\e[0m"
@@ -10,12 +10,12 @@ namespace :docker do
     end
     
     # Build Docker images
-    Rake::Task['docker:build'].invoke
+    Rake::Task['services:build'].invoke
     
     # Setup database
-    Rake::Task['docker:db:setup'].invoke
+    Rake::Task['services:db:setup'].invoke
     
-    puts "\e[32mSetup complete! Run 'rake docker:up' to start the application.\e[0m"
+    puts "\e[32mSetup complete! Run 'rake services:up' to start the application.\e[0m"
   end
   
   desc "Build Docker images"
@@ -33,7 +33,7 @@ namespace :docker do
     puts "  Rails app: http://localhost:3000"
     puts "  MinIO Console: http://localhost:9001"
     puts "  MailHog: http://localhost:8025"
-    puts "  PgAdmin: http://localhost:5050 (run 'rake docker:up_with_tools' to enable)"
+    puts "  PgAdmin: http://localhost:5050 (run 'rake services:up_with_tools' to enable)"
   end
   
   desc "Start with optional tools (PgAdmin)"
@@ -200,8 +200,8 @@ namespace :docker do
 end
 
 # Convenience tasks at root level
-desc "Start Docker development environment"
-task docker: 'docker:up'
+desc "Start development services"
+task services: 'services:up'
 
-desc "Setup Docker development environment"
-task docker_setup: 'docker:setup'
+desc "Setup development services"
+task setup: 'services:setup'
