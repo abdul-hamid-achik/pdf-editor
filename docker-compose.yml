@@ -88,7 +88,7 @@ services:
   web:
     build:
       context: .
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile
     container_name: pdf-editor-web
     restart: unless-stopped
     ports:
@@ -144,7 +144,7 @@ services:
   sidekiq:
     build:
       context: .
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile
     container_name: pdf-editor-sidekiq
     restart: unless-stopped
     environment:
