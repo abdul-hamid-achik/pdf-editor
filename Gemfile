@@ -18,7 +18,7 @@ gem "stimulus-rails"
 gem "tailwindcss-rails"
 
 # PDF Processing
-gem "hexapdf", "~> 0.44.0"  # Pure Ruby PDF library
+gem "hexapdf", "~> 1.4.0"   # Pure Ruby PDF library
 gem "combine_pdf"           # For merging PDFs
 gem "matrix"                # Required by HexaPDF
 
