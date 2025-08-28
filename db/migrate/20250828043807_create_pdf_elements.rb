@@ -13,7 +13,7 @@ class CreatePdfElements < ActiveRecord::Migration[8.0]
 
       t.timestamps
     end
-    
-    add_index :pdf_elements, [:pdf_document_id, :page_number]
+
+    add_index :pdf_elements, [ :pdf_document_id, :page_number ]
   end
 end

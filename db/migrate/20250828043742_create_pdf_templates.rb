@@ -12,7 +12,7 @@ class CreatePdfTemplates < ActiveRecord::Migration[8.0]
 
       t.timestamps
     end
-    
+
     add_index :pdf_templates, :category
     add_index :pdf_templates, :usage_count
   end

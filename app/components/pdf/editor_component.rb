@@ -26,12 +26,12 @@ class Pdf::EditorComponent < ViewComponent::Base
 
   def element_types
     [
-      { type: 'text', label: 'Text', icon: 'Type' },
-      { type: 'image', label: 'Image', icon: 'Image' },
-      { type: 'shape', label: 'Shape', icon: 'Square' },
-      { type: 'line', label: 'Line', icon: 'Minus' },
-      { type: 'table', label: 'Table', icon: 'Table' },
-      { type: 'signature', label: 'Signature', icon: 'PenTool' }
+      { type: "text", label: "Text", icon: "Type" },
+      { type: "image", label: "Image", icon: "Image" },
+      { type: "shape", label: "Shape", icon: "Square" },
+      { type: "line", label: "Line", icon: "Minus" },
+      { type: "table", label: "Table", icon: "Table" },
+      { type: "signature", label: "Signature", icon: "PenTool" }
     ]
   end
 end

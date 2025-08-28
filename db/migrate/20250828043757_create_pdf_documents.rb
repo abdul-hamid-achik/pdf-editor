@@ -12,7 +12,7 @@ class CreatePdfDocuments < ActiveRecord::Migration[8.0]
 
       t.timestamps
     end
-    
+
     add_index :pdf_documents, :status
   end
 end

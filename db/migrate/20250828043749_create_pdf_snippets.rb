@@ -10,7 +10,7 @@ class CreatePdfSnippets < ActiveRecord::Migration[8.0]
 
       t.timestamps
     end
-    
+
     add_index :pdf_snippets, :snippet_type
     add_index :pdf_snippets, :global
   end

@@ -10,13 +10,13 @@ class Pdf::DocumentListComponent < ViewComponent::Base
 
   def document_card_classes(document)
     base_classes = "bg-white rounded-lg border border-gray-200 hover:border-gray-300 hover:shadow-md transition-all duration-200 cursor-pointer"
-    
+
     case document.status
-    when 'completed'
+    when "completed"
       "#{base_classes} border-l-4 border-l-green-500"
-    when 'processing'
+    when "processing"
       "#{base_classes} border-l-4 border-l-blue-500"
-    when 'failed'
+    when "failed"
       "#{base_classes} border-l-4 border-l-red-500"
     else
       "#{base_classes} border-l-4 border-l-gray-300"
@@ -25,28 +25,28 @@ class Pdf::DocumentListComponent < ViewComponent::Base
 
   def status_badge_classes(status)
     case status
-    when 'completed'
-      'bg-green-100 text-green-800'
-    when 'processing'
-      'bg-blue-100 text-blue-800'
-    when 'failed'
-      'bg-red-100 text-red-800'
+    when "completed"
+      "bg-green-100 text-green-800"
+    when "processing"
+      "bg-blue-100 text-blue-800"
+    when "failed"
+      "bg-red-100 text-red-800"
     else
-      'bg-gray-100 text-gray-800'
+      "bg-gray-100 text-gray-800"
     end
   end
 
   def status_icon(status)
     case status
-    when 'completed'
+    when "completed"
       '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
       </svg>'.html_safe
-    when 'processing'
+    when "processing"
       '<svg class="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
       </svg>'.html_safe
-    when 'failed'
+    when "failed"
       '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
       </svg>'.html_safe
@@ -58,7 +58,7 @@ class Pdf::DocumentListComponent < ViewComponent::Base
   end
 
   def truncate_description(description, limit = 100)
-    return '' unless description
+    return "" unless description
     description.length > limit ? "#{description[0, limit]}..." : description
   end
 
@@ -67,8 +67,8 @@ class Pdf::DocumentListComponent < ViewComponent::Base
   end
 
   def file_size(document)
-    return 'N/A' unless document.generated_file.attached?
-    
+    return "N/A" unless document.generated_file.attached?
+
     size = document.generated_file.byte_size
     if size < 1024
       "#{size} B"

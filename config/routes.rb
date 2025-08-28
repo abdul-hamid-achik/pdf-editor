@@ -5,10 +5,10 @@ Rails.application.routes.draw do
 
   # Home page
   root "pages#home"
-  
+
   # Pages
   get "home", to: "pages#home"
-  
+
   resources :pdf_documents do
     member do
       post :generate
@@ -16,15 +16,15 @@ Rails.application.routes.draw do
       post :duplicate
     end
   end
-  
+
   resources :pdf_templates do
     member do
       post :use
     end
   end
-  
+
   resources :pdf_snippets
-  
+
   # PDF Editor routes
   namespace :pdf_editor do
     resources :documents, only: [] do

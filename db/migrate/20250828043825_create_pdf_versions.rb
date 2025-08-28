@@ -8,7 +8,7 @@ class CreatePdfVersions < ActiveRecord::Migration[8.0]
 
       t.timestamps
     end
-    
-    add_index :pdf_versions, [:pdf_document_id, :version_number], unique: true
+
+    add_index :pdf_versions, [ :pdf_document_id, :version_number ], unique: true
   end
 end
