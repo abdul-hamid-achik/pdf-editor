@@ -1,0 +1,10 @@
+<div class="text-element"
+     style="font-size: <%= element[:font_size] || 12 %>px; 
+            font-family: <%= element[:font_family] || 'Arial' %>; 
+            color: <%= element[:color] || '#000000' %>;
+            text-align: <%= element[:text_align] || 'left' %>;
+            font-weight: <%= element[:font_weight] || 'normal' %>;
+            font-style: <%= element[:font_style] || 'normal' %>;
+            line-height: 1.2;">
+  <%= element[:content] || 'Sample text' %>
+</div>

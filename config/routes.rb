@@ -3,8 +3,11 @@ Rails.application.routes.draw do
   get "up" => "rails/health#show", as: :rails_health_check
   get "health" => "health#check", as: :health_check
 
-  # PDF Editor routes
-  root "pdf_documents#index"
+  # Home page
+  root "pages#home"
+  
+  # Pages
+  get "home", to: "pages#home"
   
   resources :pdf_documents do
     member do

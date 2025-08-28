@@ -1,0 +1,44 @@
+<div class="pdf-element pdf-element-shape border border-dashed border-purple-300 bg-purple-50 hover:border-purple-500 cursor-move absolute"
+     data-element-id="<%= element.id %>"
+     data-element-type="shape"
+     style="left: <%= element.position['x'] || 0 %>px; top: <%= element.position['y'] || 0 %>px; width: <%= element.position['width'] || 100 %>px; height: <%= element.position['height'] || 100 %>px;"
+     data-action="click->pdf-editor#selectElement mousedown->pdf-editor#startDrag">
+  
+  <div class="w-full h-full relative">
+    <% shape_type = element.content['shape_type'] || 'rectangle' %>
+    <% fill_color = element.styles['fill_color'] || '#3B82F6' %>
+    <% border_color = element.styles['border_color'] || '#1E40AF' %>
+    <% border_width = element.styles['border_width'] || 1 %>
+    
+    <% if shape_type == 'rectangle' %>
+      <div class="w-full h-full rounded"
+           style="background-color: <%= fill_color %>; border: <%= border_width %>px solid <%= border_color %>;"></div>
+    <% elsif shape_type == 'circle' %>
+      <div class="w-full h-full rounded-full"
+           style="background-color: <%= fill_color %>; border: <%= border_width %>px solid <%= border_color %>;"></div>
+    <% elsif shape_type == 'triangle' %>
+      <div class="w-full h-full relative overflow-hidden">
+        <div class="absolute inset-0"
+             style="clip-path: polygon(50% 0%, 0% 100%, 100% 100%); background-color: <%= fill_color %>; border: <%= border_width %>px solid <%= border_color %>;"></div>
+      </div>
+    <% elsif shape_type == 'star' %>
+      <div class="w-full h-full relative overflow-hidden">
+        <div class="absolute inset-0"
+             style="clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%); background-color: <%= fill_color %>; border: <%= border_width %>px solid <%= border_color %>;"></div>
+      </div>
+    <% else %>
+      <div class="w-full h-full rounded flex items-center justify-center text-purple-600 text-xs"
+           style="background-color: <%= fill_color %>; border: <%= border_width %>px solid <%= border_color %>;">
+        <%= shape_type.humanize %>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Resize handles -->
+  <div class="element-handles hidden">
+    <div class="resize-handle nw-resize absolute -top-1 -left-1 w-2 h-2 bg-purple-600 border border-white cursor-nw-resize"></div>
+    <div class="resize-handle ne-resize absolute -top-1 -right-1 w-2 h-2 bg-purple-600 border border-white cursor-ne-resize"></div>
+    <div class="resize-handle sw-resize absolute -bottom-1 -left-1 w-2 h-2 bg-purple-600 border border-white cursor-sw-resize"></div>
+    <div class="resize-handle se-resize absolute -bottom-1 -right-1 w-2 h-2 bg-purple-600 border border-white cursor-se-resize"></div>
+  </div>
+</div>

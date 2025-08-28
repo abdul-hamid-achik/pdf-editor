@@ -1,0 +1,201 @@
+<div class="space-y-4" data-controller="document-list">
+  <!-- Header -->
+  <div class="flex items-center justify-between">
+    <div>
+      <h2 class="text-2xl font-bold text-gray-900">PDF Documents</h2>
+      <p class="text-gray-600 mt-1"><%= documents.count %> documents</p>
+    </div>
+    
+    <div class="flex items-center space-x-3">
+      <!-- Search -->
+      <div class="relative">
+        <input type="text" 
+               placeholder="Search documents..."
+               class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+               data-action="input->document-list#filterDocuments"
+               data-document-list-target="searchInput">
+        <svg class="absolute left-3 top-2.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+        </svg>
+      </div>
+      
+      <!-- Sort -->
+      <select class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              data-action="change->document-list#sortDocuments"
+              data-document-list-target="sortSelect">
+        <option value="updated_at_desc">Recently Modified</option>
+        <option value="updated_at_asc">Oldest First</option>
+        <option value="title_asc">Title A-Z</option>
+        <option value="title_desc">Title Z-A</option>
+        <option value="status">Status</option>
+      </select>
+      
+      <!-- View toggle -->
+      <div class="flex bg-gray-100 rounded-lg p-1">
+        <button class="px-3 py-1 rounded text-sm font-medium text-gray-700 hover:text-gray-900 focus:bg-white focus:shadow-sm transition-all"
+                data-action="click->document-list#toggleView"
+                data-document-list-view-param="grid"
+                data-document-list-target="gridViewBtn">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/>
+          </svg>
+        </button>
+        <button class="px-3 py-1 rounded text-sm font-medium text-gray-700 hover:text-gray-900 focus:bg-white focus:shadow-sm transition-all"
+                data-action="click->document-list#toggleView"
+                data-document-list-view-param="list"
+                data-document-list-target="listViewBtn">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/>
+          </svg>
+        </button>
+      </div>
+      
+      <!-- New Document Button -->
+      <a href="/pdf_documents/new" 
+         class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+        </svg>
+        <span>New Document</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Documents Grid/List -->
+  <div class="grid-view" data-document-list-target="documentsContainer">
+    <% if documents.any? %>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <% documents.each do |document| %>
+          <div class="<%= document_card_classes(document) %> p-6 document-card"
+               data-document-id="<%= document.id %>"
+               data-document-title="<%= document.title %>"
+               data-document-status="<%= document.status %>"
+               data-document-updated="<%= document.updated_at.iso8601 %>"
+               data-action="click->document-list#selectDocument">
+            
+            <!-- Document Preview -->
+            <div class="mb-4">
+              <div class="aspect-[8.5/11] bg-gray-100 rounded border-2 border-gray-200 flex items-center justify-center overflow-hidden">
+                <% if document.generated_file.attached? %>
+                  <!-- PDF thumbnail would go here -->
+                  <div class="text-gray-400 text-center">
+                    <svg class="w-12 h-12 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    <span class="text-xs">PDF</span>
+                  </div>
+                <% else %>
+                  <div class="text-gray-400 text-center">
+                    <svg class="w-12 h-12 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    <span class="text-xs">No preview</span>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+
+            <!-- Document Info -->
+            <div class="space-y-2">
+              <div class="flex items-center justify-between">
+                <h3 class="font-semibold text-gray-900 truncate flex-1 mr-2">
+                  <%= document.title %>
+                </h3>
+                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium <%= status_badge_classes(document.status) %>">
+                  <%= status_icon(document.status) %>
+                  <span class="ml-1"><%= document.status.humanize %></span>
+                </span>
+              </div>
+              
+              <% if document.description.present? %>
+                <p class="text-sm text-gray-600 line-clamp-2">
+                  <%= truncate_description(document.description) %>
+                </p>
+              <% end %>
+              
+              <div class="flex items-center justify-between text-xs text-gray-500 pt-2 border-t border-gray-100">
+                <div class="flex items-center space-x-4">
+                  <span><%= element_count(document) %> elements</span>
+                  <span><%= file_size(document) %></span>
+                </div>
+                <time><%= document.updated_at.strftime('%b %d') %></time>
+              </div>
+            </div>
+
+            <!-- Action buttons -->
+            <div class="mt-4 flex items-center space-x-2">
+              <a href="/pdf_documents/<%= document.id %>/edit" 
+                 class="flex-1 bg-blue-50 text-blue-700 px-3 py-2 rounded text-sm font-medium hover:bg-blue-100 transition-colors text-center"
+                 onclick="event.stopPropagation()">
+                Edit
+              </a>
+              <a href="/pdf_documents/<%= document.id %>/preview" 
+                 class="flex-1 bg-gray-50 text-gray-700 px-3 py-2 rounded text-sm font-medium hover:bg-gray-100 transition-colors text-center"
+                 onclick="event.stopPropagation()">
+                Preview
+              </a>
+              <div class="relative">
+                <button class="p-2 text-gray-400 hover:text-gray-600 rounded hover:bg-gray-50"
+                        data-action="click->document-list#toggleDropdown"
+                        data-document-list-document-param="<%= document.id %>"
+                        onclick="event.stopPropagation()">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/>
+                  </svg>
+                </button>
+                
+                <!-- Dropdown menu -->
+                <div class="absolute right-0 mt-1 w-48 bg-white rounded-md shadow-lg border border-gray-200 hidden z-10"
+                     data-document-list-target="dropdown"
+                     data-document-id="<%= document.id %>">
+                  <div class="py-1">
+                    <a href="/pdf_documents/<%= document.id %>" 
+                       class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                      View Details
+                    </a>
+                    <a href="/pdf_documents/<%= document.id %>/duplicate" 
+                       class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                      Duplicate
+                    </a>
+                    <a href="/pdf_documents/<%= document.id %>/export" 
+                       class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                      Export
+                    </a>
+                    <hr class="my-1">
+                    <button class="block w-full text-left px-4 py-2 text-sm text-red-700 hover:bg-red-50"
+                            data-action="click->document-list#deleteDocument"
+                            data-document-list-document-param="<%= document.id %>">
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <!-- Empty state -->
+      <div class="text-center py-12">
+        <svg class="w-24 h-24 mx-auto mb-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+        </svg>
+        <h3 class="text-xl font-semibold text-gray-900 mb-2">No Documents Yet</h3>
+        <p class="text-gray-600 mb-6">Get started by creating your first PDF document</p>
+        <a href="/pdf_documents/new" 
+           class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors inline-flex items-center space-x-2">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+          </svg>
+          <span>Create New Document</span>
+        </a>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Loading state -->
+  <div class="hidden items-center justify-center py-8" data-document-list-target="loading">
+    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+    <span class="ml-3 text-gray-600">Loading...</span>
+  </div>
+</div>

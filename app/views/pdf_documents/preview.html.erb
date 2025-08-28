@@ -1,0 +1,4 @@
+<% content_for :title, "Preview: #{@pdf_document.title}" %>
+<% content_for :fullscreen, true %>
+
+<%= render Pdf::PreviewComponent.new(pdf_document: @pdf_document, preview_data: @preview_data) %>

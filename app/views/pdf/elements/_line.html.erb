@@ -1,0 +1,25 @@
+<div class="pdf-element pdf-element-line border border-dashed border-red-300 bg-red-50 hover:border-red-500 cursor-move absolute"
+     data-element-id="<%= element.id %>"
+     data-element-type="line"
+     style="left: <%= element.position['x'] || 0 %>px; top: <%= element.position['y'] || 0 %>px; width: <%= element.position['width'] || 200 %>px; height: <%= element.position['height'] || 20 %>px;"
+     data-action="click->pdf-editor#selectElement mousedown->pdf-editor#startDrag">
+  
+  <div class="w-full h-full flex items-center justify-center relative overflow-hidden">
+    <% color = element.styles['color'] || '#000000' %>
+    <% width = element.styles['line_width'] || 1 %>
+    <% style_type = element.styles['line_style'] || 'solid' %>
+    
+    <div class="absolute"
+         style="width: 100%; height: <%= width %>px; background-color: <%= color %>; 
+                top: 50%; transform: translateY(-50%);
+                <% if style_type == 'dashed' %>border-top: <%= width %>px dashed <%= color %>; background: none;<% end %>
+                <% if style_type == 'dotted' %>border-top: <%= width %>px dotted <%= color %>; background: none;<% end %>">
+    </div>
+  </div>
+
+  <!-- Resize handles (only horizontal for lines) -->
+  <div class="element-handles hidden">
+    <div class="resize-handle w-resize absolute top-1/2 -left-1 w-2 h-4 -mt-2 bg-red-600 border border-white cursor-w-resize"></div>
+    <div class="resize-handle e-resize absolute top-1/2 -right-1 w-2 h-4 -mt-2 bg-red-600 border border-white cursor-e-resize"></div>
+  </div>
+</div>

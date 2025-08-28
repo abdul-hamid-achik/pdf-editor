@@ -22,9 +22,89 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body>
-    <main class="container mx-auto mt-28 px-5 flex">
+  <body class="bg-gray-50 min-h-screen">
+    <!-- Navigation Header -->
+    <nav class="bg-white shadow-sm border-b border-gray-200">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-16">
+          <!-- Logo and Brand -->
+          <div class="flex items-center space-x-4">
+            <%= link_to "/", class: "flex items-center space-x-2" do %>
+              <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+              </svg>
+              <span class="text-xl font-bold text-gray-900">PDF Editor</span>
+            <% end %>
+          </div>
+
+          <!-- Navigation Links -->
+          <div class="hidden md:flex items-center space-x-8">
+            <%= link_to "Documents", "/pdf_documents", class: "text-gray-700 hover:text-gray-900 font-medium" %>
+            <%= link_to "Templates", "/pdf_templates", class: "text-gray-700 hover:text-gray-900 font-medium" %>
+            <%= link_to "Snippets", "/pdf_snippets", class: "text-gray-700 hover:text-gray-900 font-medium" %>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="flex items-center space-x-4">
+            <%= link_to "/pdf_documents/new", class: "bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors inline-flex items-center space-x-2" do %>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+              </svg>
+              <span>New Document</span>
+            <% end %>
+            
+            <!-- User Menu (placeholder for authentication) -->
+            <div class="relative">
+              <button class="flex items-center space-x-2 text-gray-700 hover:text-gray-900">
+                <div class="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                  </svg>
+                </div>
+                <span>User</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Flash Messages -->
+    <% if notice %>
+      <div class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg mx-4 mt-4">
+        <%= notice %>
+      </div>
+    <% end %>
+    
+    <% if alert %>
+      <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mx-4 mt-4">
+        <%= alert %>
+      </div>
+    <% end %>
+
+    <!-- Main Content -->
+    <main class="<%= content_for?(:fullscreen) ? '' : 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8' %>">
       <%= yield %>
     </main>
+
+    <!-- Footer -->
+    <% unless content_for?(:fullscreen) %>
+      <footer class="bg-white border-t border-gray-200 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+              <span class="text-gray-600">© 2025 PDF Editor by Abdul Hamid Achik</span>
+              <span class="text-gray-400">•</span>
+              <a href="#" class="text-gray-600 hover:text-gray-900">Privacy</a>
+              <a href="#" class="text-gray-600 hover:text-gray-900">Terms</a>
+              <a href="#" class="text-gray-600 hover:text-gray-900">Support</a>
+            </div>
+            <div class="flex items-center space-x-4">
+              <span class="text-sm text-gray-500">Built with Rails 8 & HexaPDF in 2025</span>
+            </div>
+          </div>
+        </div>
+      </footer>
+    <% end %>
   </body>
 </html>

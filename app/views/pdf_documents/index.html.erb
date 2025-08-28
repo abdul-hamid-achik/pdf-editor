@@ -1,0 +1,80 @@
+<% content_for :title, "PDF Documents" %>
+
+<div class="space-y-6">
+  <!-- Page Header -->
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-3xl font-bold text-gray-900">PDF Documents</h1>
+      <p class="mt-2 text-gray-600">Create, edit, and manage your PDF documents</p>
+    </div>
+    
+    <%= link_to new_pdf_document_path, class: "bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors inline-flex items-center space-x-2" do %>
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+      </svg>
+      <span>Create New Document</span>
+    <% end %>
+  </div>
+
+  <!-- Quick Stats -->
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+    <div class="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+      <div class="flex items-center">
+        <div class="p-2 bg-blue-100 rounded-lg">
+          <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+          </svg>
+        </div>
+        <div class="ml-4">
+          <p class="text-sm font-medium text-gray-600">Total Documents</p>
+          <p class="text-2xl font-semibold text-gray-900"><%= @pdf_documents.count %></p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+      <div class="flex items-center">
+        <div class="p-2 bg-green-100 rounded-lg">
+          <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+          </svg>
+        </div>
+        <div class="ml-4">
+          <p class="text-sm font-medium text-gray-600">Completed</p>
+          <p class="text-2xl font-semibold text-gray-900"><%= @pdf_documents.where(status: 'completed').count %></p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+      <div class="flex items-center">
+        <div class="p-2 bg-yellow-100 rounded-lg">
+          <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+        </div>
+        <div class="ml-4">
+          <p class="text-sm font-medium text-gray-600">In Progress</p>
+          <p class="text-2xl font-semibold text-gray-900"><%= @pdf_documents.where(status: ['draft', 'processing']).count %></p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+      <div class="flex items-center">
+        <div class="p-2 bg-purple-100 rounded-lg">
+          <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zM21 5a2 2 0 00-2-2h-4a2 2 0 00-2 2v12a4 4 0 004 4h4a2 2 0 002-2V5z"/>
+          </svg>
+        </div>
+        <div class="ml-4">
+          <p class="text-sm font-medium text-gray-600">Templates Used</p>
+          <p class="text-2xl font-semibold text-gray-900"><%= @pdf_documents.where.not(pdf_template_id: nil).count %></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Document List Component -->
+  <%= render Pdf::DocumentListComponent.new(documents: @pdf_documents) %>
+</div>

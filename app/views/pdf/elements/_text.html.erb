@@ -1,0 +1,24 @@
+<div class="pdf-element pdf-element-text border border-dashed border-blue-300 bg-blue-50 hover:border-blue-500 cursor-move absolute"
+     data-element-id="<%= element.id %>"
+     data-element-type="text"
+     style="left: <%= element.position['x'] || 0 %>px; top: <%= element.position['y'] || 0 %>px; width: <%= element.position['width'] || 200 %>px; height: <%= element.position['height'] || 30 %>px;"
+     data-action="click->pdf-editor#selectElement mousedown->pdf-editor#startDrag">
+  
+  <div class="w-full h-full p-2 text-black overflow-hidden"
+       style="font-size: <%= element.styles['font_size'] || 12 %>px; 
+              font-family: <%= element.styles['font_family'] || 'Arial' %>; 
+              color: <%= element.styles['color'] || '#000000' %>;
+              text-align: <%= element.styles['text_align'] || 'left' %>;
+              font-weight: <%= element.styles['font_weight'] || 'normal' %>;
+              font-style: <%= element.styles['font_style'] || 'normal' %>;">
+    <%= element.content['text'] || 'Click to edit text' %>
+  </div>
+
+  <!-- Resize handles -->
+  <div class="element-handles hidden">
+    <div class="resize-handle nw-resize absolute -top-1 -left-1 w-2 h-2 bg-blue-600 border border-white cursor-nw-resize"></div>
+    <div class="resize-handle ne-resize absolute -top-1 -right-1 w-2 h-2 bg-blue-600 border border-white cursor-ne-resize"></div>
+    <div class="resize-handle sw-resize absolute -bottom-1 -left-1 w-2 h-2 bg-blue-600 border border-white cursor-sw-resize"></div>
+    <div class="resize-handle se-resize absolute -bottom-1 -right-1 w-2 h-2 bg-blue-600 border border-white cursor-se-resize"></div>
+  </div>
+</div>

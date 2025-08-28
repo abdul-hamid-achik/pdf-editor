@@ -1,0 +1,200 @@
+<% content_for :title, "Create New PDF Document" %>
+
+<div class="max-w-4xl mx-auto space-y-8">
+  <!-- Page Header -->
+  <div class="text-center">
+    <h1 class="text-3xl font-bold text-gray-900">Create New PDF Document</h1>
+    <p class="mt-2 text-gray-600">Choose how you'd like to start your new document</p>
+  </div>
+
+  <!-- Creation Options -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <!-- Blank Document -->
+    <div class="bg-white rounded-xl border-2 border-gray-200 hover:border-blue-300 transition-all duration-200 cursor-pointer group"
+         onclick="selectOption('blank')">
+      <div class="p-8 text-center">
+        <div class="w-16 h-16 mx-auto bg-blue-100 rounded-full flex items-center justify-center group-hover:bg-blue-200 transition-colors mb-4">
+          <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+          </svg>
+        </div>
+        <h3 class="text-xl font-semibold text-gray-900 mb-2">Blank Document</h3>
+        <p class="text-gray-600 mb-4">Start with a completely blank canvas and build your document from scratch</p>
+        <div class="text-sm text-gray-500">
+          <div>• Complete creative freedom</div>
+          <div>• Add any elements you want</div>
+          <div>• Perfect for unique designs</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- From Template -->
+    <div class="bg-white rounded-xl border-2 border-gray-200 hover:border-green-300 transition-all duration-200 cursor-pointer group"
+         onclick="selectOption('template')">
+      <div class="p-8 text-center">
+        <div class="w-16 h-16 mx-auto bg-green-100 rounded-full flex items-center justify-center group-hover:bg-green-200 transition-colors mb-4">
+          <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zM21 5a2 2 0 00-2-2h-4a2 2 0 00-2 2v12a4 4 0 004 4h4a2 2 0 002-2V5z"/>
+          </svg>
+        </div>
+        <h3 class="text-xl font-semibold text-gray-900 mb-2">From Template</h3>
+        <p class="text-gray-600 mb-4">Use a pre-designed template and customize it to your needs</p>
+        <div class="text-sm text-gray-500">
+          <div>• Professional layouts</div>
+          <div>• Quick to get started</div>
+          <div>• Easy customization</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Import/Upload -->
+    <div class="bg-white rounded-xl border-2 border-gray-200 hover:border-purple-300 transition-all duration-200 cursor-pointer group"
+         onclick="selectOption('upload')">
+      <div class="p-8 text-center">
+        <div class="w-16 h-16 mx-auto bg-purple-100 rounded-full flex items-center justify-center group-hover:bg-purple-200 transition-colors mb-4">
+          <svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+          </svg>
+        </div>
+        <h3 class="text-xl font-semibold text-gray-900 mb-2">Upload & Edit</h3>
+        <p class="text-gray-600 mb-4">Import an existing PDF and make edits or add new elements</p>
+        <div class="text-sm text-gray-500">
+          <div>• Edit existing PDFs</div>
+          <div>• Add interactive elements</div>
+          <div>• Preserve original content</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Document Form -->
+  <div id="document-form" class="hidden">
+    <%= form_with model: @pdf_document, local: true, class: "bg-white rounded-xl shadow-sm border border-gray-200 p-8 space-y-6" do |form| %>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Basic Information -->
+        <div class="space-y-4">
+          <h3 class="text-lg font-semibold text-gray-900">Document Details</h3>
+          
+          <div>
+            <%= form.label :title, class: "block text-sm font-medium text-gray-700 mb-2" %>
+            <%= form.text_field :title, class: "w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent", placeholder: "Enter document title" %>
+          </div>
+          
+          <div>
+            <%= form.label :description, class: "block text-sm font-medium text-gray-700 mb-2" %>
+            <%= form.text_area :description, rows: 3, class: "w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none", placeholder: "Describe your document (optional)" %>
+          </div>
+        </div>
+
+        <!-- Template/Upload Options -->
+        <div class="space-y-4">
+          <div id="template-selection" class="hidden">
+            <h3 class="text-lg font-semibold text-gray-900">Choose Template</h3>
+            <%= form.collection_select :pdf_template_id, PdfTemplate.all, :id, :name, 
+                { prompt: "Select a template..." }, 
+                { class: "w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" } %>
+            
+            <!-- Template Preview -->
+            <div id="template-preview" class="mt-4 p-4 bg-gray-50 rounded-lg hidden">
+              <div class="aspect-[8.5/11] bg-white border-2 border-gray-200 rounded flex items-center justify-center">
+                <span class="text-gray-400">Template Preview</span>
+              </div>
+            </div>
+          </div>
+
+          <div id="upload-section" class="hidden">
+            <h3 class="text-lg font-semibold text-gray-900">Upload PDF</h3>
+            <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-gray-400 transition-colors">
+              <svg class="w-12 h-12 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+              </svg>
+              <p class="text-gray-600 mb-2">Drag and drop your PDF here, or click to browse</p>
+              <input type="file" accept="application/pdf" class="hidden" id="pdf-upload">
+              <button type="button" onclick="document.getElementById('pdf-upload').click()" class="text-blue-600 hover:text-blue-700 font-medium">
+                Choose File
+              </button>
+            </div>
+          </div>
+
+          <div id="page-settings" class="space-y-4">
+            <h3 class="text-lg font-semibold text-gray-900">Page Settings</h3>
+            
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Page Size</label>
+              <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                <option value="letter">Letter (8.5" × 11")</option>
+                <option value="a4">A4 (210 × 297mm)</option>
+                <option value="legal">Legal (8.5" × 14")</option>
+                <option value="a3">A3 (297 × 420mm)</option>
+              </select>
+            </div>
+            
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Orientation</label>
+              <div class="flex space-x-4">
+                <label class="flex items-center">
+                  <input type="radio" name="orientation" value="portrait" checked class="mr-2">
+                  Portrait
+                </label>
+                <label class="flex items-center">
+                  <input type="radio" name="orientation" value="landscape" class="mr-2">
+                  Landscape
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form Actions -->
+      <div class="flex items-center justify-between pt-6 border-t border-gray-200">
+        <%= link_to "Cancel", pdf_documents_path, class: "px-4 py-2 text-gray-700 hover:text-gray-900 font-medium" %>
+        
+        <div class="flex space-x-3">
+          <%= form.submit "Save as Draft", class: "px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium" %>
+          <%= form.submit "Create & Edit", class: "px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium" %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<script>
+function selectOption(type) {
+  // Hide all option cards' selected state
+  document.querySelectorAll('.border-2').forEach(card => {
+    card.classList.remove('border-blue-500', 'bg-blue-50');
+  });
+  
+  // Show selected state for clicked option
+  event.currentTarget.classList.add('border-blue-500', 'bg-blue-50');
+  
+  // Show the form
+  document.getElementById('document-form').classList.remove('hidden');
+  
+  // Hide all optional sections
+  document.getElementById('template-selection').classList.add('hidden');
+  document.getElementById('upload-section').classList.add('hidden');
+  
+  // Show relevant sections based on selection
+  if (type === 'template') {
+    document.getElementById('template-selection').classList.remove('hidden');
+  } else if (type === 'upload') {
+    document.getElementById('upload-section').classList.remove('hidden');
+  }
+  
+  // Scroll to form
+  document.getElementById('document-form').scrollIntoView({ behavior: 'smooth' });
+}
+
+// File upload handling
+document.getElementById('pdf-upload').addEventListener('change', function(e) {
+  const file = e.target.files[0];
+  if (file) {
+    const fileInfo = document.createElement('div');
+    fileInfo.className = 'mt-2 text-sm text-gray-600';
+    fileInfo.innerHTML = `Selected: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`;
+    e.target.parentElement.appendChild(fileInfo);
+  }
+});
+</script>

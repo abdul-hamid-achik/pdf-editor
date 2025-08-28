@@ -1,0 +1,35 @@
+<div class="signature-element w-full h-full flex items-center justify-center border-b-2 border-gray-800 relative">
+  <% if element[:signature_data].present? %>
+    <!-- Signature content -->
+    <% if element[:signature_type] == 'image' && element[:signature_url].present? %>
+      <img src="<%= element[:signature_url] %>" 
+           alt="Signature"
+           class="max-w-full max-h-full object-contain">
+    <% elsif element[:signature_type] == 'canvas' && element[:signature_data].present? %>
+      <img src="<%= element[:signature_data] %>" 
+           alt="Digital Signature"
+           class="max-w-full max-h-full object-contain">
+    <% elsif element[:signature_type] == 'text' %>
+      <div class="text-center italic text-black" 
+           style="font-family: 'Brush Script MT', cursive; font-size: <%= element[:font_size] || 18 %>px;">
+        <%= element[:signature_text] || 'John Doe' %>
+      </div>
+    <% end %>
+  <% else %>
+    <div class="text-gray-400 text-center">
+      <div class="italic" style="font-family: 'Brush Script MT', cursive; font-size: 16px;">
+        [Signature]
+      </div>
+    </div>
+  <% end %>
+  
+  <!-- Labels for print -->
+  <% if element[:show_labels] != false %>
+    <div class="absolute -bottom-6 left-0 right-0 text-xs text-black text-center">
+      <div>Signature</div>
+      <% if element[:show_date] %>
+        <div class="mt-1">Date: ___________</div>
+      <% end %>
+    </div>
+  <% end %>
+</div>

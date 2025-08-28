@@ -1,0 +1,56 @@
+<div class="pdf-element pdf-element-table border border-dashed border-orange-300 bg-orange-50 hover:border-orange-500 cursor-move absolute"
+     data-element-id="<%= element.id %>"
+     data-element-type="table"
+     style="left: <%= element.position['x'] || 0 %>px; top: <%= element.position['y'] || 0 %>px; width: <%= element.position['width'] || 300 %>px; height: <%= element.position['height'] || 150 %>px;"
+     data-action="click->pdf-editor#selectElement mousedown->pdf-editor#startDrag">
+  
+  <div class="w-full h-full p-2 overflow-hidden">
+    <% table_data = element.content['table_data'] || [] %>
+    <% rows = element.content['rows'] || 3 %>
+    <% columns = element.content['columns'] || 3 %>
+    
+    <table class="w-full h-full border-collapse text-xs">
+      <% if table_data.any? %>
+        <% table_data.first(rows).each_with_index do |row, row_index| %>
+          <tr class="border-b border-gray-300">
+            <% row.first(columns).each_with_index do |cell, col_index| %>
+              <% if row_index == 0 %>
+                <th class="border border-gray-300 px-1 py-0.5 bg-gray-100 font-semibold text-left">
+                  <%= cell %>
+                </th>
+              <% else %>
+                <td class="border border-gray-300 px-1 py-0.5">
+                  <%= cell %>
+                </td>
+              <% end %>
+            <% end %>
+          </tr>
+        <% end %>
+      <% else %>
+        <% rows.times do |row_index| %>
+          <tr class="border-b border-gray-300">
+            <% columns.times do |col_index| %>
+              <% if row_index == 0 %>
+                <th class="border border-gray-300 px-1 py-0.5 bg-gray-100 font-semibold text-left">
+                  Header <%= col_index + 1 %>
+                </th>
+              <% else %>
+                <td class="border border-gray-300 px-1 py-0.5">
+                  Cell <%= row_index %>-<%= col_index + 1 %>
+                </td>
+              <% end %>
+            <% end %>
+          </tr>
+        <% end %>
+      <% end %>
+    </table>
+  </div>
+
+  <!-- Resize handles -->
+  <div class="element-handles hidden">
+    <div class="resize-handle nw-resize absolute -top-1 -left-1 w-2 h-2 bg-orange-600 border border-white cursor-nw-resize"></div>
+    <div class="resize-handle ne-resize absolute -top-1 -right-1 w-2 h-2 bg-orange-600 border border-white cursor-ne-resize"></div>
+    <div class="resize-handle sw-resize absolute -bottom-1 -left-1 w-2 h-2 bg-orange-600 border border-white cursor-sw-resize"></div>
+    <div class="resize-handle se-resize absolute -bottom-1 -right-1 w-2 h-2 bg-orange-600 border border-white cursor-se-resize"></div>
+  </div>
+</div>

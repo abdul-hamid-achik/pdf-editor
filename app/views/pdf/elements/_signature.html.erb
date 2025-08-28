@@ -1,0 +1,54 @@
+<div class="pdf-element pdf-element-signature border border-dashed border-indigo-300 bg-indigo-50 hover:border-indigo-500 cursor-move absolute"
+     data-element-id="<%= element.id %>"
+     data-element-type="signature"
+     style="left: <%= element.position['x'] || 0 %>px; top: <%= element.position['y'] || 0 %>px; width: <%= element.position['width'] || 200 %>px; height: <%= element.position['height'] || 80 %>px;"
+     data-action="click->pdf-editor#selectElement mousedown->pdf-editor#startDrag">
+  
+  <div class="w-full h-full p-2 flex items-center justify-center border-b-2 border-gray-400 relative">
+    <% if element.content['signature_data'].present? %>
+      <!-- Signature image or canvas data -->
+      <% if element.content['signature_type'] == 'image' && element.content['signature_url'].present? %>
+        <img src="<%= element.content['signature_url'] %>" 
+             alt="Signature"
+             class="max-w-full max-h-full object-contain">
+      <% elsif element.content['signature_type'] == 'canvas' && element.content['signature_data'].present? %>
+        <img src="<%= element.content['signature_data'] %>" 
+             alt="Digital Signature"
+             class="max-w-full max-h-full object-contain">
+      <% elsif element.content['signature_type'] == 'text' %>
+        <div class="text-center italic text-gray-800" 
+             style="font-family: 'Brush Script MT', cursive; font-size: <%= element.styles['font_size'] || 18 %>px;">
+          <%= element.content['signature_text'] || 'John Doe' %>
+        </div>
+      <% end %>
+    <% else %>
+      <div class="text-indigo-600 text-center">
+        <svg class="w-8 h-8 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+        </svg>
+        <span class="text-xs">Click to add signature</span>
+      </div>
+    <% end %>
+    
+    <!-- Signature line -->
+    <div class="absolute bottom-2 left-2 right-2 h-px bg-gray-400"></div>
+    
+    <!-- Labels -->
+    <% if element.content['show_labels'] != false %>
+      <div class="absolute -bottom-6 left-0 right-0 text-xs text-gray-600 text-center">
+        <div>Signature</div>
+        <% if element.content['show_date'] %>
+          <div class="mt-1">Date: ___________</div>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Resize handles -->
+  <div class="element-handles hidden">
+    <div class="resize-handle nw-resize absolute -top-1 -left-1 w-2 h-2 bg-indigo-600 border border-white cursor-nw-resize"></div>
+    <div class="resize-handle ne-resize absolute -top-1 -right-1 w-2 h-2 bg-indigo-600 border border-white cursor-ne-resize"></div>
+    <div class="resize-handle sw-resize absolute -bottom-1 -left-1 w-2 h-2 bg-indigo-600 border border-white cursor-sw-resize"></div>
+    <div class="resize-handle se-resize absolute -bottom-1 -right-1 w-2 h-2 bg-indigo-600 border border-white cursor-se-resize"></div>
+  </div>
+</div>

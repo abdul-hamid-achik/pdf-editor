@@ -1,0 +1,29 @@
+<div class="shape-element w-full h-full">
+  <% shape_type = element[:shape_type] || 'rectangle' %>
+  <% fill_color = element[:fill_color] || '#3B82F6' %>
+  <% border_color = element[:border_color] || '#1E40AF' %>
+  <% border_width = element[:border_width] || 1 %>
+  
+  <% if shape_type == 'rectangle' %>
+    <div class="w-full h-full"
+         style="background-color: <%= fill_color %>; border: <%= border_width %>px solid <%= border_color %>;"></div>
+  <% elsif shape_type == 'circle' %>
+    <div class="w-full h-full rounded-full"
+         style="background-color: <%= fill_color %>; border: <%= border_width %>px solid <%= border_color %>;"></div>
+  <% elsif shape_type == 'triangle' %>
+    <div class="w-full h-full relative overflow-hidden">
+      <div class="absolute inset-0"
+           style="clip-path: polygon(50% 0%, 0% 100%, 100% 100%); background-color: <%= fill_color %>; border: <%= border_width %>px solid <%= border_color %>;"></div>
+    </div>
+  <% elsif shape_type == 'star' %>
+    <div class="w-full h-full relative overflow-hidden">
+      <div class="absolute inset-0"
+           style="clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%); background-color: <%= fill_color %>; border: <%= border_width %>px solid <%= border_color %>;"></div>
+    </div>
+  <% else %>
+    <div class="w-full h-full flex items-center justify-center text-xs"
+         style="background-color: <%= fill_color %>; border: <%= border_width %>px solid <%= border_color %>;">
+      <%= shape_type.humanize %>
+    </div>
+  <% end %>
+</div>

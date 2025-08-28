@@ -1,0 +1,4 @@
+<% content_for :title, "Edit #{@pdf_document.title}" %>
+<% content_for :fullscreen, true %>
+
+<%= render Pdf::EditorComponent.new(pdf_document: @pdf_document) %>

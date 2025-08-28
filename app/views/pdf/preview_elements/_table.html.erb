@@ -1,0 +1,41 @@
+<div class="table-element w-full h-full overflow-hidden">
+  <% table_data = element[:table_data] || [] %>
+  <% rows = element[:rows] || 3 %>
+  <% columns = element[:columns] || 3 %>
+  
+  <table class="w-full h-full border-collapse text-xs">
+    <% if table_data.any? %>
+      <% table_data.first(rows).each_with_index do |row, row_index| %>
+        <tr>
+          <% row.first(columns).each_with_index do |cell, col_index| %>
+            <% if row_index == 0 %>
+              <th class="border border-gray-400 px-1 py-0.5 bg-gray-100 font-semibold text-left text-xs">
+                <%= cell %>
+              </th>
+            <% else %>
+              <td class="border border-gray-400 px-1 py-0.5 text-xs">
+                <%= cell %>
+              </td>
+            <% end %>
+          <% end %>
+        </tr>
+      <% end %>
+    <% else %>
+      <% rows.times do |row_index| %>
+        <tr>
+          <% columns.times do |col_index| %>
+            <% if row_index == 0 %>
+              <th class="border border-gray-400 px-1 py-0.5 bg-gray-100 font-semibold text-left text-xs">
+                Header <%= col_index + 1 %>
+              </th>
+            <% else %>
+              <td class="border border-gray-400 px-1 py-0.5 text-xs">
+                Cell <%= row_index %>-<%= col_index + 1 %>
+              </td>
+            <% end %>
+          <% end %>
+        </tr>
+      <% end %>
+    <% end %>
+  </table>
+</div>
