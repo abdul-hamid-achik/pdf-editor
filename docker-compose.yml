@@ -4,8 +4,6 @@ services:
     image: postgres:16-alpine
     container_name: pdf-editor-db
     restart: unless-stopped
-    ports:
-      - "5432:5432"
     environment:
       POSTGRES_USER: ${DB_USER:-pdf_editor}
       POSTGRES_PASSWORD: ${DB_PASSWORD:-password123}
@@ -28,8 +26,6 @@ services:
     image: redis:7-alpine
     container_name: pdf-editor-redis
     restart: unless-stopped
-    ports:
-      - "6379:6379"
     command: redis-server --appendonly yes
     volumes:
       - redis_data:/data
@@ -46,9 +42,6 @@ services:
     image: quay.io/minio/minio:latest
     container_name: pdf-editor-minio
     restart: unless-stopped
-    ports:
-      - "9000:9000"  # S3 API
-      - "9001:9001"  # Web Console
     environment:
       MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minioadmin123}
@@ -92,7 +85,7 @@ services:
     container_name: pdf-editor-web
     restart: unless-stopped
     ports:
-      - "3000:3000"
+      - "${PORT:-3000}:3000"
     environment:
       # Database
       DATABASE_URL: "postgresql://${DB_USER:-pdf_editor}:${DB_PASSWORD:-password123}@db:5432/${DB_NAME:-pdf_editor_development}"
@@ -182,9 +175,6 @@ services:
     image: mailhog/mailhog:latest
     container_name: pdf-editor-mailhog
     restart: unless-stopped
-    ports:
-      - "1025:1025"  # SMTP
-      - "8025:8025"  # Web UI
     networks:
       - pdf-editor-network
 
@@ -193,8 +183,6 @@ services:
     image: dpage/pgadmin4:latest
     container_name: pdf-editor-pgadmin
     restart: unless-stopped
-    ports:
-      - "5050:80"
     environment:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@example.com}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-admin123}

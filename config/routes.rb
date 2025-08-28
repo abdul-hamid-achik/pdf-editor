@@ -9,6 +9,16 @@ Rails.application.routes.draw do
   # Pages
   get "home", to: "pages#home"
 
+  # Authentication routes
+  get '/login', to: 'sessions#new', as: 'login'
+  post '/login', to: 'sessions#create'
+  delete '/logout', to: 'sessions#destroy', as: 'logout'
+  get '/register', to: 'users#new', as: 'register'
+  post '/register', to: 'users#create'
+  
+  # User profile
+  get '/profile', to: 'users#show', as: 'profile'
+
   resources :pdf_documents do
     member do
       post :generate
@@ -38,12 +48,6 @@ Rails.application.routes.draw do
     end
   end
 
-  # Authentication routes (placeholder - will be implemented later)
-  # get '/login', to: 'sessions#new'
-  # post '/login', to: 'sessions#create'
-  # delete '/logout', to: 'sessions#destroy'
-  # get '/register', to: 'users#new'
-  # post '/register', to: 'users#create'
 
   # Render dynamic PWA files from app/views/pwa/* (remember to link manifest in application.html.erb)
   # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
