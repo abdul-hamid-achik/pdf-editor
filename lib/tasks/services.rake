@@ -174,29 +174,6 @@ namespace :services do
     end
   end
   
-  namespace :prod do
-    desc "Start production environment"
-    task :up do
-      puts "\e[32mStarting production environment...\e[0m"
-      system("docker-compose -f docker-compose.yml -f docker-compose.production.yml up -d")
-    end
-    
-    desc "Stop production environment"
-    task :down do
-      system("docker-compose -f docker-compose.yml -f docker-compose.production.yml down")
-    end
-    
-    desc "Show production logs"
-    task :logs do
-      system("docker-compose -f docker-compose.yml -f docker-compose.production.yml logs -f")
-    end
-    
-    desc "Build production images"
-    task :build do
-      puts "\e[32mBuilding production Docker images...\e[0m"
-      system("docker-compose -f docker-compose.yml -f docker-compose.production.yml build")
-    end
-  end
 end
 
 # Convenience tasks at root level

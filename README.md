@@ -107,14 +107,6 @@ rake services:clean         # Clean containers (keeps data)
 rake services:clean_all     # Clean everything including data (WARNING!)
 ```
 
-#### Production Tasks
-```bash
-rake services:prod:build    # Build production images
-rake services:prod:up       # Start production environment
-rake services:prod:down     # Stop production environment
-rake services:prod:logs     # View production logs
-```
-
 ## 🗃 Services Overview
 
 ### Core Services
@@ -155,7 +147,7 @@ pdf-editor/
 ├── lib/tasks/
 │   └── services.rake          # Service management tasks
 ├── docker-compose.yml         # Development Docker setup
-├── docker-compose.production.yml  # Production overrides
+├── docker-compose.override.yml    # Development overrides
 ├── Dockerfile                 # Production image
 ├── Dockerfile.dev             # Development image
 └── .env.example               # Environment variables template
@@ -202,39 +194,6 @@ rake services:test COVERAGE=true
 
 # Run specific test file
 docker-compose run --rm -e RAILS_ENV=test web rspec spec/models/pdf_document_spec.rb
-```
-
-## 🚀 Production Deployment
-
-### Docker Production
-
-1. **Build production image**
-```bash
-rake services:prod:build
-```
-
-2. **Deploy with production compose**
-```bash
-rake services:prod:up
-```
-
-### Environment Setup for Production
-
-Update `.env` for production:
-
-```bash
-# Use real database (Neon recommended)
-DATABASE_URL=postgresql://user:pass@neon-db-url/database
-
-# Use real S3/R2 storage
-AWS_ACCESS_KEY_ID=your_real_key
-AWS_SECRET_ACCESS_KEY=your_real_secret
-AWS_BUCKET=your_production_bucket
-# Remove AWS_ENDPOINT for real S3
-
-# Production secrets
-SECRET_KEY_BASE=your_generated_secret
-RAILS_MASTER_KEY=your_master_key
 ```
 
 ## 📊 Monitoring and Health Checks
