@@ -147,7 +147,6 @@ pdf-editor/
 ├── lib/tasks/
 │   └── services.rake          # Service management tasks
 ├── docker-compose.yml         # Development Docker setup
-├── docker-compose.override.yml    # Development overrides
 ├── Dockerfile                 # Production image
 ├── Dockerfile.dev             # Development image
 └── .env.example               # Environment variables template
