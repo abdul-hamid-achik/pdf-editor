@@ -1,0 +1,75 @@
+# Development overrides for Docker Compose
+# This file is automatically loaded by docker-compose and overrides settings in docker-compose.yml
+version: '3.8'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    environment:
+      # Development specific
+      RAILS_ENV: development
+      WEB_CONCURRENCY: 1
+      BOOTSNAP_CACHE_DIR: /tmp/bootsnap
+      WEBPACKER_DEV_SERVER_HOST: webpacker
+      HISTFILE: /app/log/.bash_history
+      EDITOR: vi
+    volumes:
+      # Mount source code for hot reload
+      - .:/app:cached
+      # Persist bash history
+      - ./log/.bash_history:/root/.bash_history
+      # Exclude node_modules from mount
+      - /app/node_modules
+      # Exclude tmp directory
+      - /app/tmp
+    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails server -b '0.0.0.0' -p 3000"
+    stdin_open: true
+    tty: true
+
+  # Webpack dev server for hot reload (if needed)
+  webpacker:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: pdf-editor-webpacker
+    environment:
+      NODE_ENV: development
+      RAILS_ENV: development
+      WEBPACKER_DEV_SERVER_HOST: 0.0.0.0
+    command: ./bin/webpack-dev-server
+    volumes:
+      - .:/app:cached
+      - /app/node_modules
+    ports:
+      - "3035:3035"
+    networks:
+      - pdf-editor-network
+    profiles:
+      - webpack
+
+  # Guard for file watching and testing
+  guard:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: pdf-editor-guard
+    environment:
+      RAILS_ENV: test
+      DATABASE_URL: "postgresql://${DB_USER:-pdf_editor}:${DB_PASSWORD:-password123}@db:5432/pdf_editor_test"
+    command: bundle exec guard
+    volumes:
+      - .:/app:cached
+      - bundle_cache:/usr/local/bundle
+    depends_on:
+      - db
+      - redis
+    networks:
+      - pdf-editor-network
+    profiles:
+      - testing
+
+volumes:
+  bundle_cache:
+    driver: local

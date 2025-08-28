@@ -1,0 +1,228 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database (Neon-compatible for local development)
+  db:
+    image: postgres:16-alpine
+    container_name: pdf-editor-db
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${DB_USER:-pdf_editor}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-password123}
+      POSTGRES_DB: ${DB_NAME:-pdf_editor_development}
+      # Neon-like configuration
+      POSTGRES_INITDB_ARGS: "--data-checksums"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./db/init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-pdf_editor}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - pdf-editor-network
+
+  # Redis for caching and background jobs
+  redis:
+    image: redis:7-alpine
+    container_name: pdf-editor-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - pdf-editor-network
+
+  # MinIO for S3-compatible local storage
+  minio:
+    image: quay.io/minio/minio:latest
+    container_name: pdf-editor-minio
+    restart: unless-stopped
+    ports:
+      - "9000:9000"  # S3 API
+      - "9001:9001"  # Web Console
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minioadmin123}
+      MINIO_BROWSER_REDIRECT_URL: ${MINIO_BROWSER_URL:-http://localhost:9001}
+    command: server /data --console-address ":9001"
+    volumes:
+      - minio_data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+    networks:
+      - pdf-editor-network
+
+  # MinIO bucket initialization
+  minio-init:
+    image: minio/mc
+    container_name: pdf-editor-minio-init
+    depends_on:
+      minio:
+        condition: service_healthy
+    entrypoint: >
+      /bin/sh -c "
+      /usr/bin/mc alias set pdfstorage http://minio:9000 ${MINIO_ROOT_USER:-minioadmin} ${MINIO_ROOT_PASSWORD:-minioadmin123};
+      /usr/bin/mc mb --ignore-existing pdfstorage/pdf-documents;
+      /usr/bin/mc mb --ignore-existing pdfstorage/pdf-templates;
+      /usr/bin/mc mb --ignore-existing pdfstorage/pdf-exports;
+      /usr/bin/mc anonymous set download pdfstorage/pdf-exports;
+      echo 'MinIO buckets created successfully';
+      exit 0;
+      "
+    networks:
+      - pdf-editor-network
+
+  # Rails Application
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        RUBY_VERSION: 3.3.0
+        RAILS_ENV: development
+    container_name: pdf-editor-web
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      # Database
+      DATABASE_URL: "postgresql://${DB_USER:-pdf_editor}:${DB_PASSWORD:-password123}@db:5432/${DB_NAME:-pdf_editor_development}"
+      # Redis
+      REDIS_URL: "redis://redis:6379/1"
+      # Storage
+      AWS_ACCESS_KEY_ID: ${MINIO_ROOT_USER:-minioadmin}
+      AWS_SECRET_ACCESS_KEY: ${MINIO_ROOT_PASSWORD:-minioadmin123}
+      AWS_REGION: us-east-1
+      AWS_BUCKET: pdf-documents
+      AWS_ENDPOINT: http://minio:9000
+      AWS_FORCE_PATH_STYLE: "true"
+      # Rails
+      RAILS_ENV: ${RAILS_ENV:-development}
+      RAILS_MASTER_KEY: ${RAILS_MASTER_KEY}
+      WEB_CONCURRENCY: ${WEB_CONCURRENCY:-2}
+      RAILS_MAX_THREADS: ${RAILS_MAX_THREADS:-5}
+      RAILS_SERVE_STATIC_FILES: "true"
+      RAILS_LOG_TO_STDOUT: "true"
+    volumes:
+      - .:/app
+      - bundle_cache:/usr/local/bundle
+      - node_modules:/app/node_modules
+      - rails_cache:/app/tmp/cache
+      - rails_storage:/app/storage
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails server -b '0.0.0.0'"
+    stdin_open: true
+    tty: true
+    networks:
+      - pdf-editor-network
+
+  # Sidekiq for background jobs (optional - for async PDF generation)
+  sidekiq:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: pdf-editor-sidekiq
+    restart: unless-stopped
+    environment:
+      # Database
+      DATABASE_URL: "postgresql://${DB_USER:-pdf_editor}:${DB_PASSWORD:-password123}@db:5432/${DB_NAME:-pdf_editor_development}"
+      # Redis
+      REDIS_URL: "redis://redis:6379/1"
+      # Storage
+      AWS_ACCESS_KEY_ID: ${MINIO_ROOT_USER:-minioadmin}
+      AWS_SECRET_ACCESS_KEY: ${MINIO_ROOT_PASSWORD:-minioadmin123}
+      AWS_REGION: us-east-1
+      AWS_BUCKET: pdf-documents
+      AWS_ENDPOINT: http://minio:9000
+      AWS_FORCE_PATH_STYLE: "true"
+      # Rails
+      RAILS_ENV: ${RAILS_ENV:-development}
+      RAILS_MASTER_KEY: ${RAILS_MASTER_KEY}
+    volumes:
+      - .:/app
+      - bundle_cache:/usr/local/bundle
+      - rails_storage:/app/storage
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    command: bundle exec sidekiq
+    networks:
+      - pdf-editor-network
+
+  # Mailhog for email testing in development
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: pdf-editor-mailhog
+    restart: unless-stopped
+    ports:
+      - "1025:1025"  # SMTP
+      - "8025:8025"  # Web UI
+    networks:
+      - pdf-editor-network
+
+  # pgAdmin for database management (optional)
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: pdf-editor-pgadmin
+    restart: unless-stopped
+    ports:
+      - "5050:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@example.com}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-admin123}
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - pdf-editor-network
+    profiles:
+      - tools
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  minio_data:
+    driver: local
+  bundle_cache:
+    driver: local
+  node_modules:
+    driver: local
+  rails_cache:
+    driver: local
+  rails_storage:
+    driver: local
+  pgadmin_data:
+    driver: local
+
+networks:
+  pdf-editor-network:
+    driver: bridge
