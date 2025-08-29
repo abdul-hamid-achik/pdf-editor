@@ -4,12 +4,15 @@ module Pdf
 
     def initialize(document)
       @document = document
-      @pdf = HexaPDF::Document.new
+      @pdf = nil # Lazy load PDF document
     end
 
     def generate
       begin
         @document.update!(status: "processing")
+        
+        # Initialize PDF document lazily
+        @pdf = HexaPDF::Document.new
 
         apply_template if @document.pdf_template
         setup_pages
