@@ -97,7 +97,7 @@ RUN groupadd --system --gid 1000 rails && \
 USER rails:rails
 
 # Expose port
-EXPOSE 3000
+EXPOSE $PORT
 
-# Default command for production  
-CMD ["bash", "-c", "bundle exec rails db:prepare && bundle exec rails server -b '0.0.0.0' -p ${PORT:-3000}"]
+# Default command for production
+CMD ["sh", "-c", "bundle exec rails db:prepare && bundle exec puma -b tcp://0.0.0.0:$PORT"]
