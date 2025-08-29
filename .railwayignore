@@ -1,0 +1,55 @@
+# Railway deployment ignore file
+# Similar to .gitignore but specifically for Railway builds
+
+# Development files
+*.log
+log/*
+tmp/*
+storage/*
+node_modules/
+.env*
+docker-compose.yml
+Dockerfile
+
+# Test files
+test/
+spec/
+coverage/
+
+# Development tools
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Cache files
+.cache/
+*.cache
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Development databases
+db/development.sqlite3
+db/test.sqlite3
+*.sqlite3-wal
+*.sqlite3-shm
+
+# Local configuration
+config/master.key
+config/credentials/development.key
+config/credentials/test.key
+
+# Temporary files
+*.tmp
+*.temp
+
+# Build artifacts that don't need to be uploaded
+vendor/cache/
+vendor/bundle/ruby/*/cache/
+
+# Documentation
+README.md
+docs/
+*.md

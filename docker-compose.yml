@@ -59,6 +59,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      target: development
     container_name: pdf-editor-web
     restart: unless-stopped
     ports:
@@ -102,7 +103,7 @@ services:
       # redis dependency removed
       minio:
         condition: service_healthy
-    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails server -b '0.0.0.0'"
+    # Command is handled by Dockerfile CMD
     stdin_open: true
     tty: true
     networks:

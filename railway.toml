@@ -1,0 +1,53 @@
+[build]
+builder = "DOCKERFILE"
+buildCommand = "docker build --target production -t $RAILWAY_SERVICE ."
+
+[deploy]
+numReplicas = 1
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 10
+
+# Health check configuration
+healthcheckPath = "/up"
+healthcheckTimeout = 300
+
+# Volumes for persistent storage
+[[deploy.volumes]]
+name = "pdf-storage"
+mountPath = "/app/storage"
+# Size in GB - adjust as needed
+# Railway will provision this automatically
+
+# Environment variables for Railway deployment
+[environments.production.variables]
+RAILS_ENV = "production"
+RAILS_SERVE_STATIC_FILES = "true"
+RAILS_LOG_TO_STDOUT = "true"
+BOOTSNAP_CACHE_DIR = "/tmp/bootsnap"
+WEB_CONCURRENCY = { $default = "2" }
+RAILS_MAX_THREADS = { $default = "5" }
+
+# Storage configuration
+ACTIVE_STORAGE_SERVICE = "railway_volume"
+STORAGE_ROOT = "/app/storage"
+
+# Database will be automatically configured by Railway if you add PostgreSQL service
+
+# Build configuration
+[build.watchPatterns]
+patterns = [
+    "**/*.rb",
+    "**/*.erb", 
+    "**/*.js",
+    "**/*.css",
+    "Gemfile*",
+    "package*.json",
+    "config/**/*",
+    "app/**/*"
+]
+
+# Cron jobs for maintenance (optional)
+# [cron]
+# tasks = [
+#     { name = "cleanup_old_files", schedule = "0 2 * * *", command = "bundle exec rails runner 'ActiveStorage::Blob.unattached.where(\"created_at < ?\", 7.days.ago).find_each(&:purge)'" }
+# ]
