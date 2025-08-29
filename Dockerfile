@@ -99,6 +99,6 @@ USER rails:rails
 # Expose port
 EXPOSE 3000
 
-# Default command for production
+# Default command for production - minimal test
 ENTRYPOINT []
-CMD bundle exec rails db:prepare && bundle exec puma -C config/puma.rb
+CMD bundle exec puma -C config/puma.rb
