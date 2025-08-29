@@ -1,8 +1,8 @@
 class HealthController < ApplicationController
-  def check
-    # Skip authentication for health checks
-    skip_before_action :authenticate_user!, if: :defined_authenticate_user?
+  # Skip authentication for health checks (class level)
+  skip_before_action :authenticate_user!, if: -> { respond_to?(:authenticate_user!, true) }
 
+  def check
     health_data = {
       status: "ok",
       timestamp: Time.current.iso8601,
@@ -51,9 +51,5 @@ class HealthController < ApplicationController
     render json: health_data, status: status_code
   end
 
-  private
 
-  def defined_authenticate_user?
-    respond_to?(:authenticate_user!, true)
-  end
 end
