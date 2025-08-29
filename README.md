@@ -113,9 +113,8 @@ rake services:clean_all     # Clean everything including data (WARNING!)
 
 - **web**: Rails application server
 - **db**: PostgreSQL database
-- **redis**: Caching and session storage
 - **minio**: S3-compatible object storage
-- **sidekiq**: Background job processing
+- **Built-in Rails 8**: Solid Cache, Solid Queue, and Solid Cable for all background services
 
 ### Development Tools (Optional)
 
@@ -200,7 +199,7 @@ docker-compose run --rm -e RAILS_ENV=test web rspec spec/models/pdf_document_spe
 The application includes health check endpoints:
 
 - **Basic**: `/up` - Rails default health check
-- **Comprehensive**: `/health` - Checks database, Redis, and storage connectivity
+- **Comprehensive**: `/health` - Checks database and storage connectivity
 
 ## 🤝 Contributing
 

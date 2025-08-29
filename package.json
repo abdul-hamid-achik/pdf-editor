@@ -7,10 +7,18 @@
     "build": "esbuild app/javascript/*.* --bundle --sourcemap --outdir=app/assets/builds --public-path=/assets",
     "build:css": "tailwindcss -i ./app/assets/stylesheets/application.tailwind.css -o ./app/assets/builds/tailwind.css --watch"
   },
-  "keywords": ["pdf", "editor", "rails", "hexapdf"],
+  "keywords": [
+    "pdf",
+    "editor",
+    "rails",
+    "hexapdf"
+  ],
   "author": "Abdul Hamid Achik",
   "license": "MIT",
   "devDependencies": {
+    "@tailwindcss/aspect-ratio": "^0.4.2",
+    "@tailwindcss/forms": "^0.5.10",
+    "@tailwindcss/typography": "^0.5.16",
     "esbuild": "^0.19.0",
     "tailwindcss": "^3.3.0"
   },

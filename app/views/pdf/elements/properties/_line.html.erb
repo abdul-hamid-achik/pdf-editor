@@ -1,0 +1,119 @@
+<div class="space-y-4">
+  <h4 class="text-sm font-semibold text-gray-900">Line Properties</h4>
+  
+  <%= form_with model: [@pdf_document, element], local: false, html: { class: "space-y-3" } do |form| %>
+    <!-- Line Style -->
+    <div>
+      <label class="block text-xs font-medium text-gray-700 mb-1">Line Style</label>
+      <%= form.select :line_style,
+          options_for_select([
+            ['Solid', 'solid'],
+            ['Dashed', 'dashed'],
+            ['Dotted', 'dotted']
+          ], element.styles['line_style'] || 'solid'),
+          {},
+          { 
+            class: "w-full px-2 py-1 border border-gray-300 rounded-md text-xs",
+            data: { 
+              action: "change->pdf-editor#updateElementProperty",
+              property: "styles.line_style"
+            }
+          } %>
+    </div>
+
+    <!-- Line Properties -->
+    <div class="grid grid-cols-2 gap-2">
+      <div>
+        <label class="block text-xs font-medium text-gray-700 mb-1">Line Width</label>
+        <%= form.number_field :line_width,
+            value: element.styles['line_width'] || 1,
+            min: 1, max: 20,
+            class: "w-full px-2 py-1 border border-gray-300 rounded-md text-xs",
+            data: { 
+              action: "input->pdf-editor#updateElementProperty",
+              property: "styles.line_width"
+            } %>
+      </div>
+      
+      <div>
+        <label class="block text-xs font-medium text-gray-700 mb-1">Line Color</label>
+        <%= form.color_field :color,
+            value: element.styles['color'] || '#000000',
+            class: "w-full h-8 border border-gray-300 rounded-md cursor-pointer",
+            data: { 
+              action: "input->pdf-editor#updateElementProperty",
+              property: "styles.color"
+            } %>
+      </div>
+    </div>
+
+    <!-- Position and Size -->
+    <div class="pt-2 border-t border-gray-200">
+      <h5 class="text-xs font-medium text-gray-700 mb-2">Position & Size</h5>
+      <div class="grid grid-cols-2 gap-2">
+        <div>
+          <label class="block text-xs font-medium text-gray-600 mb-1">X Position</label>
+          <%= form.number_field :x_position,
+              value: element.x_position || 0,
+              step: 0.1,
+              class: "w-full px-2 py-1 border border-gray-300 rounded-md text-xs",
+              data: { 
+                action: "input->pdf-editor#updateElementProperty",
+                property: "x_position"
+              } %>
+        </div>
+        
+        <div>
+          <label class="block text-xs font-medium text-gray-600 mb-1">Y Position</label>
+          <%= form.number_field :y_position,
+              value: element.y_position || 0,
+              step: 0.1,
+              class: "w-full px-2 py-1 border border-gray-300 rounded-md text-xs",
+              data: { 
+                action: "input->pdf-editor#updateElementProperty",
+                property: "y_position"
+              } %>
+        </div>
+        
+        <div>
+          <label class="block text-xs font-medium text-gray-600 mb-1">Width</label>
+          <%= form.number_field :width,
+              value: element.width || 200,
+              min: 10,
+              class: "w-full px-2 py-1 border border-gray-300 rounded-md text-xs",
+              data: { 
+                action: "input->pdf-editor#updateElementProperty",
+                property: "width"
+              } %>
+        </div>
+        
+        <div>
+          <label class="block text-xs font-medium text-gray-600 mb-1">Height</label>
+          <%= form.number_field :height,
+              value: element.height || 20,
+              min: 5,
+              class: "w-full px-2 py-1 border border-gray-300 rounded-md text-xs",
+              data: { 
+                action: "input->pdf-editor#updateElementProperty",
+                property: "height"
+              } %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="pt-2 border-t border-gray-200 flex space-x-2">
+      <button type="button" 
+              class="flex-1 px-3 py-1 text-xs bg-red-600 text-white rounded hover:bg-red-700"
+              data-action="click->pdf-editor#deleteSelectedElement">
+        Delete
+      </button>
+      
+      <button type="button" 
+              class="flex-1 px-3 py-1 text-xs bg-gray-600 text-white rounded hover:bg-gray-700"
+              data-action="click->pdf-editor#duplicateElement">
+        Duplicate
+      </button>
+    </div>
+  <% end %>
+</div>

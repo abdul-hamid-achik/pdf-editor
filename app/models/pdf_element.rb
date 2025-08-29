@@ -11,6 +11,22 @@ class PdfElement < ApplicationRecord
   scope :ordered, -> { order(:page_number, :z_index) }
   scope :by_type, ->(type) { where(element_type: type) }
 
+  def content
+    properties["content"] || {}
+  end
+
+  def content=(value)
+    self.properties = properties.merge("content" => value)
+  end
+
+  def styles
+    properties["styles"] || {}
+  end
+
+  def styles=(value)
+    self.properties = properties.merge("styles" => value)
+  end
+
   def render_properties
     {
       type: element_type,

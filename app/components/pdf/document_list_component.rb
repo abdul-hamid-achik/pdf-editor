@@ -9,7 +9,7 @@ class Pdf::DocumentListComponent < ViewComponent::Base
   attr_reader :documents, :current_user
 
   def document_card_classes(document)
-    base_classes = "bg-white rounded-lg border border-gray-200 hover:border-gray-300 hover:shadow-md transition-all duration-200 cursor-pointer"
+    base_classes = "bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 hover:shadow-md transition-all duration-200 cursor-pointer"
 
     case document.status
     when "completed"
@@ -26,13 +26,13 @@ class Pdf::DocumentListComponent < ViewComponent::Base
   def status_badge_classes(status)
     case status
     when "completed"
-      "bg-green-100 text-green-800"
+      "bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-400"
     when "processing"
-      "bg-blue-100 text-blue-800"
+      "bg-blue-100 dark:bg-blue-900/20 text-blue-800 dark:text-blue-400"
     when "failed"
-      "bg-red-100 text-red-800"
+      "bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-400"
     else
-      "bg-gray-100 text-gray-800"
+      "bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300"
     end
   end
 

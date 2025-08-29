@@ -1,0 +1,67 @@
+<div class="bg-white shadow-lg rounded-lg overflow-hidden">
+  <div class="bg-gray-50 px-4 py-3 border-b border-gray-200">
+    <h3 class="text-lg font-semibold text-gray-900">Document Preview</h3>
+  </div>
+  
+  <div class="p-4">
+    <% if preview_html.present? %>
+      <!-- Preview content -->
+      <div class="bg-white border border-gray-300 rounded-lg p-4 min-h-[400px] max-h-[600px] overflow-auto">
+        <div class="preview-content">
+          <%= raw preview_html %>
+        </div>
+      </div>
+    <% else %>
+      <!-- Empty state -->
+      <div class="flex items-center justify-center min-h-[400px] bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg">
+        <div class="text-center">
+          <svg class="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+          </svg>
+          <h4 class="text-lg font-semibold text-gray-600 mb-2">No Preview Available</h4>
+          <p class="text-gray-500">Add some elements to your document to see a preview.</p>
+        </div>
+      </div>
+    <% end %>
+  </div>
+  
+  <div class="bg-gray-50 px-4 py-3 border-t border-gray-200 flex justify-end space-x-2">
+    <button type="button" 
+            class="px-4 py-2 text-sm bg-blue-600 text-white rounded hover:bg-blue-700"
+            onclick="window.print()">
+      Print Preview
+    </button>
+    
+    <% if defined?(@pdf_document) && @pdf_document %>
+    <a href="<%= pdf_document_path(@pdf_document, format: :pdf) %>" 
+       target="_blank"
+       class="px-4 py-2 text-sm bg-green-600 text-white rounded hover:bg-green-700 no-underline">
+      Download PDF
+    </a>
+    <% end %>
+  </div>
+</div>
+
+<style>
+  /* Preview-specific styles */
+  .preview-content {
+    font-family: Arial, sans-serif;
+    line-height: 1.4;
+  }
+  
+  .preview-content .pdf-element {
+    border: none !important;
+    background: transparent !important;
+  }
+  
+  .preview-content .element-handles {
+    display: none !important;
+  }
+  
+  @media print {
+    .preview-content {
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+  }
+</style>

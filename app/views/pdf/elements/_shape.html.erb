@@ -1,7 +1,7 @@
 <div class="pdf-element pdf-element-shape border border-dashed border-purple-300 bg-purple-50 hover:border-purple-500 cursor-move absolute"
      data-element-id="<%= element.id %>"
      data-element-type="shape"
-     style="left: <%= element.position['x'] || 0 %>px; top: <%= element.position['y'] || 0 %>px; width: <%= element.position['width'] || 100 %>px; height: <%= element.position['height'] || 100 %>px;"
+     style="left: <%= element.x_position || 0 %>px; top: <%= element.y_position || 0 %>px; width: <%= element.width || 100 %>px; height: <%= element.height || 100 %>px;"
      data-action="click->pdf-editor#selectElement mousedown->pdf-editor#startDrag">
   
   <div class="w-full h-full relative">

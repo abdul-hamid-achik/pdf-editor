@@ -15,21 +15,7 @@ services:
     networks:
       - pdf-editor-network
 
-  # Redis for caching and background jobs
-  redis:
-    image: redis:7-alpine
-    container_name: pdf-editor-redis
-    restart: unless-stopped
-    command: redis-server --appendonly yes
-    volumes:
-      - redis_data:/data
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    networks:
-      - pdf-editor-network
+  # Redis removed - Rails 8 uses Solid Cache, Solid Queue, and Solid Cable instead
 
   # MinIO for S3-compatible local storage
   minio:
@@ -80,8 +66,7 @@ services:
     environment:
       # Database
       DATABASE_URL: "postgresql://${DB_USER:-pdf_editor}:${DB_PASSWORD:-password123}@db:5432/${DB_NAME:-pdf_editor_development}"
-      # Redis
-      REDIS_URL: "redis://redis:6379/1"
+      # Redis removed - using Rails 8 built-in solutions
       # Storage
       AWS_ACCESS_KEY_ID: ${MINIO_ROOT_USER:-minioadmin}
       AWS_SECRET_ACCESS_KEY: ${MINIO_ROOT_PASSWORD:-minioadmin123}
@@ -114,8 +99,7 @@ services:
     depends_on:
       db:
         condition: service_started
-      redis:
-        condition: service_healthy
+      # redis dependency removed
       minio:
         condition: service_healthy
     command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails server -b '0.0.0.0'"
@@ -124,42 +108,7 @@ services:
     networks:
       - pdf-editor-network
 
-  # Sidekiq for background jobs (optional - for async PDF generation)
-  sidekiq:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: pdf-editor-sidekiq
-    restart: unless-stopped
-    environment:
-      # Database
-      DATABASE_URL: "postgresql://${DB_USER:-pdf_editor}:${DB_PASSWORD:-password123}@db:5432/${DB_NAME:-pdf_editor_development}"
-      # Redis
-      REDIS_URL: "redis://redis:6379/1"
-      # Storage
-      AWS_ACCESS_KEY_ID: ${MINIO_ROOT_USER:-minioadmin}
-      AWS_SECRET_ACCESS_KEY: ${MINIO_ROOT_PASSWORD:-minioadmin123}
-      AWS_REGION: us-east-1
-      AWS_BUCKET: pdf-documents
-      AWS_ENDPOINT: http://minio:9000
-      AWS_FORCE_PATH_STYLE: "true"
-      # Rails Development
-      RAILS_ENV: development
-      RAILS_MASTER_KEY: ${RAILS_MASTER_KEY}
-    volumes:
-      - .:/app:cached
-      - bundle_cache:/usr/local/bundle
-      - rails_storage:/app/storage
-    depends_on:
-      db:
-        condition: service_started
-      redis:
-        condition: service_healthy
-      minio:
-        condition: service_healthy
-    command: bundle exec sidekiq
-    networks:
-      - pdf-editor-network
+  # Background jobs handled by Solid Queue (built into Rails app)
 
   # Mailhog for email testing in development
   mailhog:
@@ -191,8 +140,7 @@ services:
 volumes:
   postgres_data:
     driver: local
-  redis_data:
-    driver: local
+  # redis_data volume removed
   minio_data:
     driver: local
   bundle_cache:

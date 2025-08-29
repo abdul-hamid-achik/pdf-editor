@@ -5,8 +5,8 @@ class CreatePdfDocuments < ActiveRecord::Migration[8.0]
       t.references :pdf_template, foreign_key: true
       t.string :title
       t.text :description
-      t.jsonb :metadata, default: {}
-      t.jsonb :content_data, default: {}
+      t.json :metadata, default: {}
+      t.json :content_data, default: {}
       t.string :status, default: 'draft'
       t.datetime :generated_at
 

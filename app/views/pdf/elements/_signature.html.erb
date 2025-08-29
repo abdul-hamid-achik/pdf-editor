@@ -1,7 +1,7 @@
 <div class="pdf-element pdf-element-signature border border-dashed border-indigo-300 bg-indigo-50 hover:border-indigo-500 cursor-move absolute"
      data-element-id="<%= element.id %>"
      data-element-type="signature"
-     style="left: <%= element.position['x'] || 0 %>px; top: <%= element.position['y'] || 0 %>px; width: <%= element.position['width'] || 200 %>px; height: <%= element.position['height'] || 80 %>px;"
+     style="left: <%= element.x_position || 0 %>px; top: <%= element.y_position || 0 %>px; width: <%= element.width || 200 %>px; height: <%= element.height || 80 %>px;"
      data-action="click->pdf-editor#selectElement mousedown->pdf-editor#startDrag">
   
   <div class="w-full h-full p-2 flex items-center justify-center border-b-2 border-gray-400 relative">

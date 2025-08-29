@@ -4,8 +4,8 @@ class CreatePdfTemplates < ActiveRecord::Migration[8.0]
       t.string :name, null: false
       t.text :description
       t.string :category
-      t.jsonb :structure, default: {}
-      t.jsonb :default_data, default: {}
+      t.json :structure, default: {}
+      t.json :default_data, default: {}
       t.string :thumbnail_url
       t.integer :usage_count, default: 0
       t.references :user, foreign_key: true

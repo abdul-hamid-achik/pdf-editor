@@ -10,14 +10,14 @@ Rails.application.routes.draw do
   get "home", to: "pages#home"
 
   # Authentication routes
-  get '/login', to: 'sessions#new', as: 'login'
-  post '/login', to: 'sessions#create'
-  delete '/logout', to: 'sessions#destroy', as: 'logout'
-  get '/register', to: 'users#new', as: 'register'
-  post '/register', to: 'users#create'
-  
+  get "/login", to: "sessions#new", as: "login"
+  post "/login", to: "sessions#create"
+  delete "/logout", to: "sessions#destroy", as: "logout"
+  get "/register", to: "users#new", as: "register"
+  post "/register", to: "users#create"
+
   # User profile
-  get '/profile', to: 'users#show', as: 'profile'
+  get "/profile", to: "users#show", as: "profile"
 
   resources :pdf_documents do
     member do
@@ -25,6 +25,9 @@ Rails.application.routes.draw do
       get :preview
       post :duplicate
     end
+
+    # Nested PDF elements for the main editor
+    resources :pdf_elements, except: [ :index ]
   end
 
   resources :pdf_templates do

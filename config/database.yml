@@ -24,16 +24,16 @@ default: &default
     statement_timeout: '30s'
 
 development:
-  <<: *default
-  url: <%= ENV['DATABASE_URL'] %>
-  # Fallback to local database if DATABASE_URL not set
-  database: pdf_editor_development
+  adapter: sqlite3
+  database: db/development.sqlite3
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  timeout: 5000
 
 test:
-  <<: *default
-  url: <%= ENV['DATABASE_URL_TEST'] %>
-  # Fallback to local database if DATABASE_URL_TEST not set  
-  database: pdf_editor_test
+  adapter: sqlite3
+  database: db/test.sqlite3
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  timeout: 5000
 
 # As with config/credentials.yml, you never want to store sensitive information,
 # like your database password, in your source code. If your source code is
