@@ -94,11 +94,12 @@ RUN groupadd --system --gid 1000 rails && \
     useradd rails --uid 1000 --gid 1000 --create-home --shell /bin/bash && \
     chown -R rails:rails db log storage tmp
 
-USER rails:rails
+# Run as root for testing
+# USER rails:rails
 
 # Expose port
 EXPOSE 3000
 
-# Default command for production - test basic HTTP server
+# Default command for production - test basic HTTP server as root
 ENTRYPOINT []  
 CMD ruby -run -e httpd . -p $PORT
