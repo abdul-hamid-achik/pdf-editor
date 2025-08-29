@@ -99,5 +99,5 @@ USER rails:rails
 # Expose port
 EXPOSE 3000
 
-# Default command for production
-CMD ["bash", "-c", "bundle exec rails db:prepare && bundle exec rails server -b '0.0.0.0'"]
+# Default command for production  
+CMD ["bash", "-c", "bundle exec rails db:prepare && bundle exec rails server -b '0.0.0.0' -p ${PORT:-3000}"]
