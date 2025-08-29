@@ -1,0 +1,106 @@
+<%= form_with model: @pdf_template, local: true, class: "space-y-6" do |form| %>
+  <% if @pdf_template.errors.any? %>
+    <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
+      <h3 class="text-red-800 dark:text-red-400 font-semibold mb-2">
+        <%= pluralize(@pdf_template.errors.count, "error") %> prohibited this template from being saved:
+      </h3>
+      <ul class="text-red-700 dark:text-red-300 text-sm list-disc list-inside">
+        <% @pdf_template.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <!-- Basic Information -->
+    <div class="space-y-4">
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Basic Information</h3>
+      
+      <div>
+        <%= form.label :name, class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+        <%= form.text_field :name, 
+            class: "w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white",
+            placeholder: "Template name" %>
+      </div>
+
+      <div>
+        <%= form.label :description, class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+        <%= form.text_area :description, rows: 4,
+            class: "w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white resize-none",
+            placeholder: "Brief description of the template..." %>
+      </div>
+
+      <div>
+        <%= form.label :category, class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+        <%= form.select :category, 
+            options_for_select([
+              ["Business", "business"],
+              ["Legal", "legal"],
+              ["Invoice", "invoice"], 
+              ["Report", "report"],
+              ["Form", "form"],
+              ["Letter", "letter"],
+              ["Other", "other"]
+            ], @pdf_template.category),
+            { prompt: "Select a category" },
+            { class: "w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white" } %>
+      </div>
+
+      <div>
+        <%= form.label :thumbnail_url, class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+        <%= form.url_field :thumbnail_url,
+            class: "w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white",
+            placeholder: "https://example.com/thumbnail.jpg" %>
+        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Optional: URL to a thumbnail image for this template</p>
+      </div>
+    </div>
+
+    <!-- Template Structure -->
+    <div class="space-y-4">
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Template Structure</h3>
+      
+      <div>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          Template Structure (JSON)
+        </label>
+        <%= text_area_tag "pdf_template[structure]", 
+            @pdf_template.structure.present? ? JSON.pretty_generate(@pdf_template.structure) : "",
+            rows: 8,
+            class: "w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white font-mono text-sm resize-none",
+            placeholder: '{"pages": 1, "elements": []}' %>
+        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+          Define the template structure in JSON format
+        </p>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          Default Data (JSON)
+        </label>
+        <%= text_area_tag "pdf_template[default_data]", 
+            @pdf_template.default_data.present? ? JSON.pretty_generate(@pdf_template.default_data) : "",
+            rows: 8,
+            class: "w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white font-mono text-sm resize-none",
+            placeholder: '{"title": "Sample Document", "author": ""}' %>
+        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+          Default values for template variables
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Form Actions -->
+  <div class="flex items-center justify-between pt-6 border-t border-gray-200 dark:border-gray-700">
+    <div class="flex space-x-3">
+      <%= form.submit class: "bg-blue-600 dark:bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors" %>
+      <%= link_to "Cancel", pdf_templates_path, class: "px-6 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors" %>
+    </div>
+    
+    <% if @pdf_template.persisted? %>
+      <%= link_to "Delete", @pdf_template, method: :delete,
+          data: { confirm: "Are you sure you want to delete this template? This action cannot be undone." },
+          class: "text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300" %>
+    <% end %>
+  </div>
+<% end %>

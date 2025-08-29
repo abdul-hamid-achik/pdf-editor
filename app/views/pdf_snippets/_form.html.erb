@@ -1,0 +1,93 @@
+<%= form_with model: @pdf_snippet, local: true, class: "space-y-6" do |form| %>
+  <% if @pdf_snippet.errors.any? %>
+    <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
+      <h3 class="text-red-800 dark:text-red-400 font-semibold mb-2">
+        <%= pluralize(@pdf_snippet.errors.count, "error") %> prohibited this snippet from being saved:
+      </h3>
+      <ul class="text-red-700 dark:text-red-300 text-sm list-disc list-inside">
+        <% @pdf_snippet.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <!-- Basic Information -->
+    <div class="space-y-4">
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Basic Information</h3>
+      
+      <div>
+        <%= form.label :name, class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+        <%= form.text_field :name, 
+            class: "w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white",
+            placeholder: "Snippet name" %>
+      </div>
+
+      <div>
+        <%= form.label :snippet_type, "Type", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+        <%= form.select :snippet_type, 
+            options_for_select(PdfSnippet::SNIPPET_TYPES.map { |type| [type.humanize, type] }, @pdf_snippet.snippet_type),
+            { prompt: "Select a type" },
+            { class: "w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white" } %>
+      </div>
+
+      <div class="flex items-center">
+        <%= form.check_box :global, class: "h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 dark:border-gray-600 rounded" %>
+        <%= form.label :global, "Make this snippet globally available", class: "ml-2 block text-sm text-gray-700 dark:text-gray-300" %>
+      </div>
+      
+      <p class="text-xs text-gray-500 dark:text-gray-400">
+        Global snippets can be used by all users. Otherwise, only you can use this snippet.
+      </p>
+    </div>
+
+    <!-- Snippet Properties -->
+    <div class="space-y-4">
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Properties</h3>
+      
+      <div>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          Properties (JSON)
+        </label>
+        <%= text_area_tag "pdf_snippet[properties]", 
+            @pdf_snippet.properties.present? ? JSON.pretty_generate(@pdf_snippet.properties) : "",
+            rows: 6,
+            class: "w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white font-mono text-sm resize-none",
+            placeholder: '{"color": "#000000", "fontSize": 12}' %>
+        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+          Define snippet properties in JSON format (colors, fonts, sizes, etc.)
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div>
+    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Content</h3>
+    
+    <div>
+      <%= form.label :content, class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" %>
+      <%= form.text_area :content, rows: 8,
+          class: "w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white resize-none",
+          placeholder: "Enter the content of your snippet here..." %>
+      <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+        This is the actual content that will be included when using this snippet
+      </p>
+    </div>
+  </div>
+
+  <!-- Form Actions -->
+  <div class="flex items-center justify-between pt-6 border-t border-gray-200 dark:border-gray-700">
+    <div class="flex space-x-3">
+      <%= form.submit class: "bg-blue-600 dark:bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors" %>
+      <%= link_to "Cancel", pdf_snippets_path, class: "px-6 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors" %>
+    </div>
+    
+    <% if @pdf_snippet.persisted? %>
+      <%= link_to "Delete", @pdf_snippet, method: :delete,
+          data: { confirm: "Are you sure you want to delete this snippet? This action cannot be undone." },
+          class: "text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300" %>
+    <% end %>
+  </div>
+<% end %>
