@@ -94,12 +94,11 @@ RUN groupadd --system --gid 1000 rails && \
     useradd rails --uid 1000 --gid 1000 --create-home --shell /bin/bash && \
     chown -R rails:rails db log storage tmp
 
-# Run as root for testing
-# USER rails:rails
+USER rails:rails
 
 # Expose port
 EXPOSE 3000
 
-# Default command for production - test basic HTTP server as root
-ENTRYPOINT []  
-CMD ruby -run -e httpd . -p $PORT
+# Default command for production - restored Rails app
+ENTRYPOINT []
+CMD bundle exec rails db:prepare && bundle exec puma -C config/puma.rb
