@@ -97,7 +97,8 @@ RUN groupadd --system --gid 1000 rails && \
 USER rails:rails
 
 # Expose port
-EXPOSE $PORT
+EXPOSE 3000
 
 # Default command for production
-CMD ["sh", "-c", "bundle exec rails db:prepare && bundle exec puma -b tcp://0.0.0.0:$PORT"]
+ENTRYPOINT []
+CMD bundle exec rails db:prepare && bundle exec puma -C config/puma.rb
