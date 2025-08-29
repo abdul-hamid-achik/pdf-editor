@@ -31,11 +31,13 @@ export default class extends Controller {
     enableDarkMode() {
         document.documentElement.classList.add('dark')
         localStorage.setItem('theme', 'dark')
+        document.cookie = 'theme=dark; path=/; max-age=31536000; SameSite=Lax'
     }
 
     enableLightMode() {
         document.documentElement.classList.remove('dark')
         localStorage.setItem('theme', 'light')
+        document.cookie = 'theme=light; path=/; max-age=31536000; SameSite=Lax'
     }
 
     updateIcon() {

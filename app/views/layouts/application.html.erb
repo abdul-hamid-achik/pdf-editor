@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html class="<%= 'dark' if cookies[:theme] == 'dark' %>">
   <head>
     <title><%= content_for(:title) || "Pdf Editor" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
