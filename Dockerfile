@@ -63,7 +63,7 @@ FROM base as production
 ENV RAILS_ENV="production" \
     BUNDLE_DEPLOYMENT="1" \
     BUNDLE_PATH="/usr/local/bundle" \
-    BUNDLE_WITHOUT="development:test"
+    BUNDLE_WITHOUT="development:test:assets"
 
 # Install production gems only (including webrick)
 RUN bundle install --verbose && \
@@ -100,6 +100,10 @@ USER rails:rails
 # Expose port
 EXPOSE 3000
 
-# Default command for production
+# Default command for production with debugging
 ENTRYPOINT []
-CMD bundle exec rails db:create db:migrate && bundle exec puma -C config/puma.rb
+CMD echo "Starting Rails application..." && \
+    bundle exec gem list webrick && \
+    bundle exec rails db:create db:migrate && \
+    echo "Database setup complete, starting Puma..." && \
+    bundle exec puma -C config/puma.rb
