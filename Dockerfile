@@ -99,6 +99,6 @@ USER rails:rails
 # Expose port
 EXPOSE 3000
 
-# Default command for production - minimal test
-ENTRYPOINT []
-CMD bundle exec puma -C config/puma.rb
+# Default command for production - test basic HTTP server
+ENTRYPOINT []  
+CMD ruby -run -e httpd . -p $PORT
