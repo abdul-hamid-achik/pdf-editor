@@ -9,7 +9,6 @@ storage/*
 node_modules/
 .env*
 docker-compose.yml
-Dockerfile
 
 # Test files
 test/
