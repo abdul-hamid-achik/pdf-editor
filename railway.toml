@@ -31,3 +31,18 @@ ACTIVE_STORAGE_SERVICE = "railway_volume"
 STORAGE_ROOT = "/app/storage"
 
 # Database will be automatically configured by Railway if you add PostgreSQL service
+
+# Cron jobs for cleanup of temporary artifacts (not user documents)
+[cron]
+tasks = [
+    { 
+        name = "cleanup_temp_files", 
+        schedule = "0 2 * * *", 
+        command = "bundle exec rails runner 'Rails.logger.info(\"Starting temp file cleanup\"); Dir.glob(Rails.root.join(\"tmp\", \"*\")).select { |f| File.mtime(f) < 24.hours.ago }.each { |f| FileUtils.rm_rf(f) rescue nil }; Rails.logger.info(\"Temp file cleanup completed\")'" 
+    },
+    { 
+        name = "cleanup_old_logs", 
+        schedule = "0 3 * * 0", 
+        command = "bundle exec rails runner 'Rails.logger.info(\"Starting log cleanup\"); Dir.glob(Rails.root.join(\"log\", \"*.log\")).each { |f| File.truncate(f, 0) if File.size(f) > 10.megabytes } rescue nil; Rails.logger.info(\"Log cleanup completed\")'" 
+    }
+]
