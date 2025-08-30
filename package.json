@@ -29,6 +29,7 @@
   },
   "dependencies": {
     "@hotwired/stimulus": "^3.2.0",
+    "@hotwired/stimulus-webpack-helpers": "^3.0.1",
     "@hotwired/turbo-rails": "^8.0.0"
   }
 }
