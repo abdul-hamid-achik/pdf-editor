@@ -62,47 +62,12 @@ rake services:up
 4. **Access the application**
 - **Rails App**: http://localhost:3000
 - **MailHog**: http://localhost:8025 (email testing)
-- **PgAdmin**: http://localhost:5050 (admin@example.com/admin123) - run `rake services:up_with_tools`
 
 ### Available Rake Tasks
 
-#### Development Tasks
 ```bash
-rake services:setup         # Initial setup (build, bundle, database)
-rake services:up            # Start all services
-rake services:down          # Stop all services
-rake services:restart       # Restart services
-rake services:logs          # View all logs
-rake services:logs_web      # View Rails app logs
-rake services:ps            # Show running containers
-```
-
-#### Rails Tasks in Docker
-```bash
-rake services:console       # Open Rails console
-rake services:bash          # Open bash shell in web container
-rake services:bundle        # Install gems
-rake services:yarn          # Install JavaScript packages
-rake services:test          # Run tests
-rake services:rubocop       # Run code linting
-rake services:rubocop_fix   # Fix code style issues
-```
-
-#### Database Tasks
-```bash
-rake services:db:setup      # Setup database (create, migrate, seed)
-rake services:db:create     # Create database
-rake services:db:migrate    # Run migrations
-rake services:db:seed       # Seed database
-rake services:db:reset      # Reset database
-rake services:db:console    # Open database console
-```
-
-#### Utility Tasks
-```bash
-rake services:stats         # Show container resource usage
-rake services:clean         # Clean containers (keeps data)
-rake services:clean_all     # Clean everything including data (WARNING!)
+rake services:setup    # Initial setup (build images, setup database)
+rake services:up       # Start all services
 ```
 
 ## 🗃 Services Overview
@@ -113,10 +78,9 @@ rake services:clean_all     # Clean everything including data (WARNING!)
 - **db**: PostgreSQL database  
 - **Built-in Rails 8**: Solid Cache, Solid Queue, and Solid Cable for all background services
 
-### Development Tools (Optional)
+### Development Tools
 
 - **mailhog**: Email testing (catches all outbound emails)
-- **pgadmin**: Database administration GUI
 
 ## 📁 Project Structure
 
@@ -176,10 +140,10 @@ Run the test suite in Docker:
 
 ```bash
 # Run all tests
-rake services:test
+docker-compose run --rm -e RAILS_ENV=test web rspec
 
 # Run with coverage
-rake services:test COVERAGE=true
+docker-compose run --rm -e RAILS_ENV=test web rspec COVERAGE=true
 
 # Run specific test file
 docker-compose run --rm -e RAILS_ENV=test web rspec spec/models/pdf_document_spec.rb
@@ -197,11 +161,10 @@ The application includes health check endpoints:
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
 3. Make your changes
-4. Run tests (`rake services:test`)
-5. Run linting (`rake services:rubocop_fix`)
-6. Commit your changes (`git commit -m 'Add amazing feature'`)
-7. Push to the branch (`git push origin feature/amazing-feature`)
-8. Open a Pull Request
+4. Run tests
+5. Commit your changes (`git commit -m 'Add amazing feature'`)
+6. Push to the branch (`git push origin feature/amazing-feature`)
+7. Open a Pull Request
 
 ## 📝 License
 
@@ -212,30 +175,30 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ### Common Issues
 
 1. **Port conflicts**: If ports are in use, update `.env` with different port numbers
-2. **Database connection issues**: Run `rake services:db:setup` to initialize the database
+2. **Database connection issues**: Run `rake services:setup` to initialize the database
 3. **Storage issues**: Check that local storage directory has proper permissions
 4. **Memory issues**: Increase Docker memory allocation in Docker Desktop settings
 
 ### Getting Help
 
-- Check the logs: `rake services:logs`
-- Inspect containers: `rake services:ps`
-- Reset everything: `rake services:clean_all` (⚠️ deletes all data)
+- Check the logs: `docker-compose logs -f`
+- Inspect containers: `docker-compose ps`
+- Reset everything: `docker-compose down -v` (⚠️ deletes all data)
 
 ### Development Workflow
 
 ```bash
 # Daily development cycle
-rake services:up         # Start services
-rake services:logs_web   # Watch Rails logs in another terminal
+rake services:up                    # Start services
+docker-compose logs -f web          # Watch Rails logs in another terminal
 
 # Make changes to code (hot reload enabled)
 
-rake services:test       # Run tests
-rake services:rubocop    # Check code style
+# Access Rails console
+docker-compose exec web rails console
 
 # When done
-rake services:down       # Stop services
+docker-compose down                 # Stop services
 ```
 
 ## 🎯 Next Steps

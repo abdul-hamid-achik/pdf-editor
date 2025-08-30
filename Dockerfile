@@ -76,14 +76,17 @@ RUN bundle install --verbose && \
 # Copy package.json if it exists
 COPY package*.json ./
 
-# Install npm packages if package.json exists
-RUN if [ -f package.json ]; then npm ci --only=production && npm cache clean --force; fi
+# Install npm packages if package.json exists (include devDependencies for Tailwind)
+RUN if [ -f package.json ]; then npm ci && npm cache clean --force; fi
 
 # Copy application code
 COPY . .
 
 # Precompile bootsnap code for faster boot times
 RUN bundle exec bootsnap precompile app/ lib/
+
+# Build all assets (JS and CSS)
+RUN if [ -f package.json ]; then npm run build; fi
 
 # Precompiling assets for production without requiring secret RAILS_MASTER_KEY
 RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile

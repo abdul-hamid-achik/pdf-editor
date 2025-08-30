@@ -5,7 +5,7 @@
  * served via Rails' asset pipeline (Propshaft).
  *
  * The Tailwind source is in application.tailwind.css and gets compiled to
- * app/assets/builds/tailwind.css via the npm build:css script.
+ * app/assets/builds/tailwind.css via the npm build script.
  */
 
 /* Import the compiled Tailwind CSS */
