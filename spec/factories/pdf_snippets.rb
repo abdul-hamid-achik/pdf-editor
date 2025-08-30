@@ -1,10 +1,10 @@
 FactoryBot.define do
   factory :pdf_snippet do
     name { "Snippet #{Faker::Number.unique.number(digits: 4)}" }
-    description { Faker::Lorem.sentence }
     snippet_type { PdfSnippet::SNIPPET_TYPES.sample }
     content { { elements: [] } }
     global { false }
+    properties { { description: Faker::Lorem.sentence } }
 
     trait :global do
       global { true }

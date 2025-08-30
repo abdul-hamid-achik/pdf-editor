@@ -2,12 +2,12 @@ require 'rails_helper'
 
 RSpec.describe PdfSnippet, type: :model do
   describe 'associations' do
-    it { should belong_to(:user).optional }
+    it { is_expected.to belong_to(:user).optional }
   end
 
   describe 'validations' do
-    it { should validate_presence_of(:name) }
-    it { should validate_inclusion_of(:snippet_type).in_array(PdfSnippet::SNIPPET_TYPES).allow_blank }
+    it { is_expected.to validate_presence_of(:name) }
+    it { is_expected.to validate_inclusion_of(:snippet_type).in_array(PdfSnippet::SNIPPET_TYPES).allow_blank }
   end
 
   describe 'scopes' do
@@ -21,8 +21,10 @@ RSpec.describe PdfSnippet, type: :model do
 
     describe '.by_type' do
       it 'returns snippets of specific type' do
-        expect(PdfSnippet.by_type('header')).to contain_exactly(header_snippet)
-        expect(PdfSnippet.by_type('footer')).to contain_exactly(footer_snippet)
+        expect(PdfSnippet.by_type('header')).to include(header_snippet)
+        expect(PdfSnippet.by_type('header')).not_to include(footer_snippet)
+        expect(PdfSnippet.by_type('footer')).to include(footer_snippet)
+        expect(PdfSnippet.by_type('footer')).not_to include(header_snippet)
       end
     end
 

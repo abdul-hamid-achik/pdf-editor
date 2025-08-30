@@ -11,4 +11,12 @@ class PdfTemplate < ApplicationRecord
   def increment_usage!
     increment!(:usage_count)
   end
+
+  def layout_config
+    structure || {}
+  end
+
+  def layout_config=(value)
+    self.structure = value
+  end
 end

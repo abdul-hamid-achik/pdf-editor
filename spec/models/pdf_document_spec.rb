@@ -2,15 +2,15 @@ require 'rails_helper'
 
 RSpec.describe PdfDocument, type: :model do
   describe 'associations' do
-    it { should belong_to(:user) }
-    it { should belong_to(:pdf_template).optional }
-    it { should have_many(:pdf_elements).dependent(:destroy) }
-    it { should have_many(:pdf_versions).dependent(:destroy) }
-    it { should have_one_attached(:generated_file) }
+    it { is_expected.to belong_to(:user) }
+    it { is_expected.to belong_to(:pdf_template).optional }
+    it { is_expected.to have_many(:pdf_elements).dependent(:destroy) }
+    it { is_expected.to have_many(:pdf_versions).dependent(:destroy) }
+    it { is_expected.to have_one_attached(:generated_file) }
   end
 
   describe 'validations' do
-    it { should validate_inclusion_of(:status).in_array(PdfDocument::STATUSES) }
+    it { is_expected.to validate_inclusion_of(:status).in_array(PdfDocument::STATUSES) }
   end
 
   describe 'scopes' do

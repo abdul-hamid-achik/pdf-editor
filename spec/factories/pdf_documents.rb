@@ -4,7 +4,7 @@ FactoryBot.define do
     title { "Document #{Faker::Number.unique.number(digits: 4)}" }
     status { "draft" }
     metadata { { pages: 1, format: "A4" } }
-    content { { version: "1.0" } }
+    content_data { { version: "1.0" } }
 
     trait :with_template do
       association :pdf_template

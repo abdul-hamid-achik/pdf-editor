@@ -2,15 +2,15 @@ require 'rails_helper'
 
 RSpec.describe PdfVersion, type: :model do
   describe 'associations' do
-    it { should belong_to(:pdf_document) }
-    it { should belong_to(:user).optional }
+    it { is_expected.to belong_to(:pdf_document) }
+    it { is_expected.to belong_to(:user).optional }
   end
 
   describe 'validations' do
     subject { create(:pdf_version) }
     
-    it { should validate_presence_of(:version_number) }
-    it { should validate_uniqueness_of(:version_number).scoped_to(:pdf_document_id) }
+    it { is_expected.to validate_presence_of(:version_number) }
+    it { is_expected.to validate_uniqueness_of(:version_number).scoped_to(:pdf_document_id) }
   end
 
   describe 'scopes' do

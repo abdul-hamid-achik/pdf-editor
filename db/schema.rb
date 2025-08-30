@@ -43,12 +43,12 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_29_060205) do
   end
 
   create_table "pdf_documents", force: :cascade do |t|
-    t.bigint "user_id", null: false
-    t.bigint "pdf_template_id"
+    t.integer "user_id", null: false
+    t.integer "pdf_template_id"
     t.string "title"
     t.text "description"
-    t.jsonb "metadata", default: {}
-    t.jsonb "content_data", default: {}
+    t.json "metadata", default: {}
+    t.json "content_data", default: {}
     t.string "status", default: "draft"
     t.datetime "generated_at"
     t.datetime "created_at", null: false
@@ -59,9 +59,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_29_060205) do
   end
 
   create_table "pdf_elements", force: :cascade do |t|
-    t.bigint "pdf_document_id", null: false
+    t.integer "pdf_document_id", null: false
     t.string "element_type"
-    t.jsonb "properties", default: {}
+    t.json "properties", default: {}
     t.integer "page_number", default: 1
     t.float "x_position"
     t.float "y_position"
@@ -77,10 +77,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_29_060205) do
   create_table "pdf_snippets", force: :cascade do |t|
     t.string "name", null: false
     t.string "snippet_type"
-    t.jsonb "properties", default: {}
+    t.json "properties", default: {}
     t.text "content"
     t.boolean "global", default: false
-    t.bigint "user_id"
+    t.integer "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["global"], name: "index_pdf_snippets_on_global"
@@ -92,11 +92,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_29_060205) do
     t.string "name", null: false
     t.text "description"
     t.string "category"
-    t.jsonb "structure", default: {}
-    t.jsonb "default_data", default: {}
+    t.json "structure", default: {}
+    t.json "default_data", default: {}
     t.string "thumbnail_url"
     t.integer "usage_count", default: 0
-    t.bigint "user_id"
+    t.integer "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["category"], name: "index_pdf_templates_on_category"
@@ -105,10 +105,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_29_060205) do
   end
 
   create_table "pdf_versions", force: :cascade do |t|
-    t.bigint "pdf_document_id", null: false
+    t.integer "pdf_document_id", null: false
     t.integer "version_number", null: false
-    t.jsonb "version_changes", default: {}
-    t.bigint "user_id"
+    t.json "version_changes", default: {}
+    t.integer "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["pdf_document_id", "version_number"], name: "index_pdf_versions_on_pdf_document_id_and_version_number", unique: true
@@ -127,8 +127,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_29_060205) do
     t.index ["email"], name: "index_users_on_email", unique: true
   end
 
-  add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
-  add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "pdf_documents", "pdf_templates"
   add_foreign_key "pdf_documents", "users"
   add_foreign_key "pdf_elements", "pdf_documents"

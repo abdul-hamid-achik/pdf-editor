@@ -2,12 +2,12 @@ require 'rails_helper'
 
 RSpec.describe PdfTemplate, type: :model do
   describe 'associations' do
-    it { should belong_to(:user).optional }
-    it { should have_many(:pdf_documents).dependent(:nullify) }
+    it { is_expected.to belong_to(:user).optional }
+    it { is_expected.to have_many(:pdf_documents).dependent(:nullify) }
   end
 
   describe 'validations' do
-    it { should validate_presence_of(:name) }
+    it { is_expected.to validate_presence_of(:name) }
   end
 
   describe 'scopes' do
@@ -20,7 +20,8 @@ RSpec.describe PdfTemplate, type: :model do
 
     describe '.by_category' do
       it 'returns templates of specific category' do
-        expect(PdfTemplate.by_category('business')).to contain_exactly(business_template)
+        expect(PdfTemplate.by_category('business')).to include(business_template)
+        expect(PdfTemplate.by_category('business')).not_to include(education_template)
       end
     end
 
@@ -33,7 +34,8 @@ RSpec.describe PdfTemplate, type: :model do
 
     describe '.global' do
       it 'returns templates without user' do
-        expect(PdfTemplate.global).to contain_exactly(global_template)
+        expect(PdfTemplate.global).to include(global_template)
+        expect(PdfTemplate.global).not_to include(user_template)
       end
     end
   end

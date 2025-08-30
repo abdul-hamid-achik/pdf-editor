@@ -2,13 +2,13 @@ require 'rails_helper'
 
 RSpec.describe PdfElement, type: :model do
   describe 'associations' do
-    it { should belong_to(:pdf_document) }
+    it { is_expected.to belong_to(:pdf_document) }
   end
 
   describe 'validations' do
-    it { should validate_inclusion_of(:element_type).in_array(PdfElement::ELEMENT_TYPES) }
-    it { should validate_numericality_of(:page_number).is_greater_than(0) }
-    it { should validate_numericality_of(:z_index).is_greater_than_or_equal_to(0) }
+    it { is_expected.to validate_inclusion_of(:element_type).in_array(PdfElement::ELEMENT_TYPES) }
+    it { is_expected.to validate_numericality_of(:page_number).is_greater_than(0) }
+    it { is_expected.to validate_numericality_of(:z_index).is_greater_than_or_equal_to(0) }
   end
 
   describe 'scopes' do
