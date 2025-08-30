@@ -81,7 +81,7 @@ RUN bundle exec bootsnap precompile app/ lib/
 
 # Precompile assets using Rails 8 native pipeline (importmap + tailwindcss-rails)
 # This handles both JavaScript (via importmap) and CSS (via tailwindcss-rails gem)
-RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
+RUN RAILS_ENV=production SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
 
 # Create storage directory and set permissions
 RUN mkdir -p storage tmp/cache tmp/pids tmp/sockets && \
