@@ -11,15 +11,7 @@ Rails.application.config.assets.paths << Rails.root.join("app", "assets", "build
 
 # Configure Propshaft to handle our assets properly
 Rails.application.config.assets.precompile += %w[
-  application.js
-  application.css
   tailwind.css
-  controllers/application.js
-  controllers/document_list_controller.js
-  controllers/hello_controller.js
-  controllers/pdf_editor_controller.js
-  controllers/pdf_preview_controller.js
-  controllers/theme_toggle_controller.js
 ]
 
 # Ensure proper MIME type handling for JavaScript modules
