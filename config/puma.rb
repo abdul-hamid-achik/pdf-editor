@@ -36,6 +36,22 @@ plugin :tmp_restart
 # Run the Solid Queue supervisor inside of Puma for single-server deployments
 plugin :solid_queue if ENV["SOLID_QUEUE_IN_PUMA"]
 
+# Configure workers for development vs production
+if ENV["RAILS_ENV"] == "development"
+  # Use single mode (no workers) for development to avoid single worker warning
+  workers 0
+  # Increase worker timeout for development (default is 60 seconds)
+  worker_timeout 120
+else
+  # Use cluster mode for production if WEB_CONCURRENCY > 1
+  workers ENV.fetch("WEB_CONCURRENCY", 1).to_i
+end
+
+# Preload app in production for better memory usage
+if ENV["RAILS_ENV"] == "production"
+  preload_app!
+end
+
 # Specify the PID file. Defaults to tmp/pids/server.pid in development.
 # In other environments, only set the PID file if requested.
 pidfile ENV["PIDFILE"] if ENV["PIDFILE"]

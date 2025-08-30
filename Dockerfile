@@ -29,6 +29,8 @@ COPY Gemfile Gemfile.lock ./
 FROM base as development
 
 ENV RAILS_ENV=development
+ENV BUNDLE_PATH=/usr/local/bundle
+ENV BUNDLE_APP_CONFIG=/usr/local/bundle
 
 # Install development tools
 RUN apt-get update -qq && \
@@ -39,10 +41,10 @@ RUN apt-get update -qq && \
     net-tools \
     && rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
-# Install all gems including development
+# Install all gems including development with consistent path
 RUN gem install bundler && \
-    bundle config set --local development 'true' && \
-    bundle config set --local without 'production' && \
+    bundle config set --global path '/usr/local/bundle' && \
+    bundle config set --global without 'production' && \
     bundle install --jobs 4 --retry 3
 
 # Copy application code

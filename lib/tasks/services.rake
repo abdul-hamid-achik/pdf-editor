@@ -31,7 +31,6 @@ namespace :services do
 
     puts "\e[32mServices started!\e[0m"
     puts "  Rails app: http://localhost:3000"
-    puts "  MinIO Console: http://localhost:9001"
     puts "  MailHog: http://localhost:8025"
     puts "  PgAdmin: http://localhost:5050 (run 'rake services:up_with_tools' to enable)"
   end
@@ -104,11 +103,7 @@ namespace :services do
     system("docker-compose run --rm web rubocop -a")
   end
 
-  desc "Open MinIO console in browser"
-  task :minio_console do
-    puts "\e[32mOpening MinIO console...\e[0m"
-    system("open http://localhost:9001 2>/dev/null || xdg-open http://localhost:9001 2>/dev/null || echo 'Please open http://localhost:9001 in your browser'")
-  end
+
 
   desc "Clean up containers (preserves data)"
   task :clean do

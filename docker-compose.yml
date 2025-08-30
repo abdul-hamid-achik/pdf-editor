@@ -12,47 +12,17 @@ services:
       POSTGRES_INITDB_ARGS: "--data-checksums"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-pdf_editor} -d ${DB_NAME:-pdf_editor_development}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     networks:
       - pdf-editor-network
 
   # Redis removed - Rails 8 uses Solid Cache, Solid Queue, and Solid Cable instead
 
-  # MinIO for S3-compatible local storage
-  minio:
-    image: quay.io/minio/minio:latest
-    container_name: pdf-editor-minio
-    restart: unless-stopped
-    ports:
-      - "9000:9000"
-      - "9001:9001"
-    environment:
-      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
-      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minioadmin123}
-      MINIO_BROWSER_REDIRECT_URL: ${MINIO_BROWSER_URL:-http://localhost:9001}
-    entrypoint: sh
-    command: -c '
-      minio server /data --console-address ":9001" &
-      MINIO_PID=$$!;
-      echo "Waiting for MinIO to start...";
-      until curl -sf http://127.0.0.1:9000/minio/health/live; do sleep 1; done;
-      echo "MinIO started. Creating buckets...";
-      mc alias set local http://127.0.0.1:9000 ${MINIO_ROOT_USER:-minioadmin} ${MINIO_ROOT_PASSWORD:-minioadmin123};
-      mc mb --ignore-existing local/pdf-documents;
-      mc mb --ignore-existing local/pdf-templates;
-      mc mb --ignore-existing local/pdf-exports;
-      mc anonymous set download local/pdf-exports;
-      echo "Buckets created. MinIO is ready.";
-      wait $$MINIO_PID
-      '
-    volumes:
-      - minio_data:/data
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
-      interval: 30s
-      timeout: 20s
-      retries: 3
-    networks:
-      - pdf-editor-network
+
 
   # Rails Application
   web:
@@ -67,24 +37,19 @@ services:
     environment:
       # Database
       DATABASE_URL: "postgresql://${DB_USER:-pdf_editor}:${DB_PASSWORD:-password123}@db:5432/${DB_NAME:-pdf_editor_development}"
-      # Redis removed - using Rails 8 built-in solutions
-      # Storage
-      AWS_ACCESS_KEY_ID: ${MINIO_ROOT_USER:-minioadmin}
-      AWS_SECRET_ACCESS_KEY: ${MINIO_ROOT_PASSWORD:-minioadmin123}
-      AWS_REGION: us-east-1
-      AWS_BUCKET: pdf-documents
-      AWS_ENDPOINT: http://minio:9000
-      AWS_FORCE_PATH_STYLE: "true"
       # Rails Development
       RAILS_ENV: development
       RAILS_MASTER_KEY: ${RAILS_MASTER_KEY}
-      WEB_CONCURRENCY: 1
+      WEB_CONCURRENCY: 0
       RAILS_MAX_THREADS: 5
       RAILS_SERVE_STATIC_FILES: "true"
       RAILS_LOG_TO_STDOUT: "true"
       BOOTSNAP_CACHE_DIR: /tmp/bootsnap
       HISTFILE: /app/log/.bash_history
       EDITOR: vi
+      # Bundle configuration
+      BUNDLE_PATH: /usr/local/bundle
+      BUNDLE_APP_CONFIG: /usr/local/bundle
     volumes:
       # Mount source code for hot reload
       - .:/app:cached
@@ -99,9 +64,6 @@ services:
       - /app/tmp
     depends_on:
       db:
-        condition: service_started
-      # redis dependency removed
-      minio:
         condition: service_healthy
     # Command is handled by Dockerfile CMD
     stdin_open: true
@@ -142,8 +104,6 @@ volumes:
   postgres_data:
     driver: local
   # redis_data volume removed
-  minio_data:
-    driver: local
   bundle_cache:
     driver: local
   node_modules:

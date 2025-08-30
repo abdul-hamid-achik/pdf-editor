@@ -1,7 +1,6 @@
 Rails.application.routes.draw do
   # Health checks
   get "up" => "rails/health#show", as: :rails_health_check
-  get "health" => "health#check", as: :health_check
 
   # Home page
   root "pages#home"

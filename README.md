@@ -9,7 +9,7 @@ A modern Rails 8 application for creating and editing PDFs using HexaPDF, featur
 - **Interactive Editor**: Real-time editing with Turbo Streams and Stimulus
 - **Snippet Management**: Reusable PDF components (headers, footers, watermarks)
 - **Version Control**: Track document changes and versions
-- **Storage**: S3-compatible storage with MinIO for local development
+- **Storage**: Local file system storage for development, Railway blob storage for production
 - **Modern UI**: TailwindCSS with responsive design
 
 ## 🛠 Technology Stack
@@ -18,7 +18,7 @@ A modern Rails 8 application for creating and editing PDFs using HexaPDF, featur
 - **Rails**: 8.0+
 - **PDF Engine**: HexaPDF (pure Ruby)
 - **Database**: PostgreSQL (Neon-compatible)
-- **Storage**: S3/MinIO
+- **Storage**: Local file system / Railway blob
 - **Frontend**: Hotwire (Turbo + Stimulus)
 - **Styling**: TailwindCSS
 - **Background Jobs**: Solid Queue
@@ -61,7 +61,6 @@ rake services:up
 
 4. **Access the application**
 - **Rails App**: http://localhost:3000
-- **MinIO Console**: http://localhost:9001 (minioadmin/minioadmin123)
 - **MailHog**: http://localhost:8025 (email testing)
 - **PgAdmin**: http://localhost:5050 (admin@example.com/admin123) - run `rake services:up_with_tools`
 
@@ -101,7 +100,6 @@ rake services:db:console    # Open database console
 
 #### Utility Tasks
 ```bash
-rake services:minio_console # Open MinIO web console
 rake services:stats         # Show container resource usage
 rake services:clean         # Clean containers (keeps data)
 rake services:clean_all     # Clean everything including data (WARNING!)
@@ -112,8 +110,7 @@ rake services:clean_all     # Clean everything including data (WARNING!)
 ### Core Services
 
 - **web**: Rails application server
-- **db**: PostgreSQL database
-- **minio**: S3-compatible object storage
+- **db**: PostgreSQL database  
 - **Built-in Rails 8**: Solid Cache, Solid Queue, and Solid Cable for all background services
 
 ### Development Tools (Optional)
@@ -161,12 +158,6 @@ Key configuration options in `.env`:
 # Database
 DATABASE_URL=postgresql://pdf_editor:password123@localhost:5432/pdf_editor_development
 
-# Storage (MinIO for local development)
-AWS_ACCESS_KEY_ID=minioadmin
-AWS_SECRET_ACCESS_KEY=minioadmin123
-AWS_ENDPOINT=http://localhost:9000
-AWS_BUCKET=pdf-documents
-
 # Rails
 RAILS_ENV=development
 RAILS_MASTER_KEY=your_master_key_here
@@ -174,10 +165,10 @@ RAILS_MASTER_KEY=your_master_key_here
 
 ### Storage Configuration
 
-The application uses Active Storage with S3-compatible backends:
+The application uses Active Storage with different backends per environment:
 
-- **Development**: MinIO (local S3-compatible storage)
-- **Production**: AWS S3, Cloudflare R2, or any S3-compatible service
+- **Development**: Local file system storage
+- **Production**: Railway blob storage (volume-based)
 
 ## 🧪 Testing
 
@@ -222,7 +213,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 1. **Port conflicts**: If ports are in use, update `.env` with different port numbers
 2. **Database connection issues**: Run `rake services:db:setup` to initialize the database
-3. **Storage issues**: Ensure MinIO is running with `docker-compose ps minio`
+3. **Storage issues**: Check that local storage directory has proper permissions
 4. **Memory issues**: Increase Docker memory allocation in Docker Desktop settings
 
 ### Getting Help
