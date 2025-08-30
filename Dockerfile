@@ -1,5 +1,5 @@
 # Multi-stage Dockerfile for both development and production
-FROM ruby:3.3.8-slim as base
+FROM ruby:3.3.8-slim AS base
 
 # Install system dependencies
 RUN apt-get update -qq && \
@@ -15,9 +15,7 @@ RUN apt-get update -qq && \
     libssl-dev \
     && rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
-# Install Node.js LTS
-RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - && \
-    apt-get install -y nodejs
+# Node.js not needed - Rails 8 uses importmap-rails for JavaScript
 
 # Rails app lives here
 WORKDIR /app
@@ -26,7 +24,7 @@ WORKDIR /app
 COPY Gemfile Gemfile.lock ./
 
 # Development stage
-FROM base as development
+FROM base AS development
 
 ENV RAILS_ENV=development
 ENV BUNDLE_PATH=/usr/local/bundle
@@ -60,7 +58,7 @@ EXPOSE 3000 3035
 CMD ["bash", "-c", "rm -f tmp/pids/server.pid && bundle exec rails db:prepare && bundle exec rails server -b '0.0.0.0'"]
 
 # Production stage
-FROM base as production
+FROM base AS production
 
 ENV RAILS_ENV="production" \
     BUNDLE_DEPLOYMENT="1" \
@@ -73,11 +71,7 @@ RUN bundle install --verbose && \
     rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git && \
     bundle exec bootsnap precompile --gemfile
 
-# Copy package.json if it exists
-COPY package*.json ./
-
-# Install npm packages if package.json exists (include devDependencies for Tailwind)
-RUN if [ -f package.json ]; then npm ci && npm cache clean --force; fi
+# package.json no longer needed - Rails 8 handles assets natively
 
 # Copy application code
 COPY . .
@@ -85,10 +79,8 @@ COPY . .
 # Precompile bootsnap code for faster boot times
 RUN bundle exec bootsnap precompile app/ lib/
 
-# Build all assets (JS and CSS)
-RUN if [ -f package.json ]; then npm run build; fi
-
-# Precompiling assets for production without requiring secret RAILS_MASTER_KEY
+# Precompile assets using Rails 8 native pipeline (importmap + tailwindcss-rails)
+# This handles both JavaScript (via importmap) and CSS (via tailwindcss-rails gem)
 RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
 
 # Create storage directory and set permissions
